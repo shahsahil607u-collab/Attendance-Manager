@@ -58,8 +58,12 @@ const Students = () => {
     setSaving(true);
     try {
       const payload = { ...formData, semester: formData.semester ? Number(formData.semester) : undefined, year: formData.year ? Number(formData.year) : undefined };
+
       if (editStudent) {
-        await api.put(`/students/${editStudent._id}`, payload);
+        // Exclude rollNumber from update payload — it's disabled in the form
+        // and sending it can cause duplicate-key crashes on the backend
+        const { rollNumber, ...updatePayload } = payload;
+        await api.put(`/students/${editStudent._id}`, updatePayload);
       } else {
         await api.post('/students', payload);
       }
@@ -75,6 +79,9 @@ const Students = () => {
       fetchStudents();
     } catch (err) { alert(getErrorMessage(err)); }
   };
+
+  // Calculate the serial number offset based on the current page
+  const serialOffset = ((pagination.page || 1) - 1) * (pagination.limit || 15);
 
   return (
     <div>
@@ -102,15 +109,33 @@ const Students = () => {
         <div className="card">
           <div className="table-container">
             <table>
-              <thead><tr><th>Roll No</th><th>Name</th><th>Email</th><th>Phone</th><th>Dept</th><th>Status</th>{isCoordinator && <th>Actions</th>}</tr></thead>
+              <thead>
+                <tr>
+                  <th style={{ width: '48px', textAlign: 'center' }}>#</th>
+                  <th>Roll No</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Dept</th>
+                  <th>Sem</th>
+                  <th>Year</th>
+                  <th>Team</th>
+                  <th>Status</th>
+                  {isCoordinator && <th>Actions</th>}
+                </tr>
+              </thead>
               <tbody>
-                {students.map(s => (
+                {students.map((s, index) => (
                   <tr key={s._id}>
+                    <td style={{ textAlign: 'center', color: 'var(--gray-400)', fontSize: '0.8125rem' }}>{serialOffset + index + 1}</td>
                     <td><strong>{s.rollNumber}</strong></td>
-                    <td style={{ cursor: 'pointer', color: 'var(--primary-600)' }} onClick={() => navigate(`/students/${s._id}`)}>{s.fullName}</td>
+                    <td style={{ cursor: 'pointer', color: 'var(--primary-600)', fontWeight: 500 }} onClick={() => navigate(`/students/${s._id}`)}>{s.fullName}</td>
                     <td style={{ fontSize: '0.8125rem' }}>{s.email}</td>
                     <td style={{ fontSize: '0.8125rem' }}>{s.phone}</td>
                     <td style={{ fontSize: '0.8125rem' }}>{s.department}</td>
+                    <td style={{ fontSize: '0.8125rem', textAlign: 'center' }}>{s.semester || '—'}</td>
+                    <td style={{ fontSize: '0.8125rem', textAlign: 'center' }}>{s.year || '—'}</td>
+                    <td style={{ fontSize: '0.8125rem' }}>{s.team || '—'}</td>
                     <td><span className={`badge ${s.isActive ? 'badge-success' : 'badge-danger'}`}>{s.isActive ? 'Active' : 'Inactive'}</span></td>
                     {isCoordinator && (
                       <td>

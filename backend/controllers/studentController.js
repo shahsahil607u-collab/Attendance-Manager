@@ -155,7 +155,7 @@ const updateStudent = async (req, res, next) => {
     }
 
     // If roll number changed, check for duplicates
-    if (req.body.rollNumber && req.body.rollNumber.toUpperCase() !== student.rollNumber) {
+    if (req.body.rollNumber && req.body.rollNumber.trim() !== '' && req.body.rollNumber.toUpperCase() !== student.rollNumber) {
       const existing = await Student.findOne({ rollNumber: req.body.rollNumber.toUpperCase() });
       if (existing) {
         return res.status(409).json({

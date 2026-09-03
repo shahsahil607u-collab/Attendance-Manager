@@ -66,9 +66,13 @@ const sendEmail = async ({ to, subject, html, text }) => {
       };
     }
 
-    const fromAddress = (process.env.SMTP_USER && process.env.SMTP_USER.trim() !== '')
+    const senderEmail = (process.env.SMTP_USER && process.env.SMTP_USER.trim() !== '')
       ? (process.env.FROM_EMAIL || process.env.SMTP_USER)
-      : '"Technical Team Attendance" <noreply@techteam.edu>';
+      : 'noreply@techteam.edu';
+
+    const fromAddress = senderEmail.includes('<')
+      ? senderEmail
+      : `"Technical Team Attendance" <${senderEmail}>`;
 
     const info = await mailer.sendMail({
       from: fromAddress,

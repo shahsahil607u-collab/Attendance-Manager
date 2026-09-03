@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -34,6 +35,18 @@ const userSchema = new mongoose.Schema({
   lastLogin: {
     type: Date,
   },
+  refreshToken: {
+    type: String,
+    select: false,
+  },
+  resetPasswordToken: {
+    type: String,
+    select: false,
+  },
+  resetPasswordExpiry: {
+    type: Date,
+    select: false,
+  },
 }, {
   timestamps: true,
 });
@@ -52,10 +65,21 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.passwordHash);
 };
 
-// Never return passwordHash in JSON
+// Generate password reset token
+userSchema.methods.generateResetToken = function () {
+  const token = crypto.randomBytes(32).toString('hex');
+  this.resetPasswordToken = crypto.createHash('sha256').update(token).digest('hex');
+  this.resetPasswordExpiry = Date.now() + 30 * 60 * 1000; // 30 minutes
+  return token;
+};
+
+// Never return sensitive fields in JSON
 userSchema.methods.toJSON = function () {
   const obj = this.toObject();
   delete obj.passwordHash;
+  delete obj.refreshToken;
+  delete obj.resetPasswordToken;
+  delete obj.resetPasswordExpiry;
   return obj;
 };
 

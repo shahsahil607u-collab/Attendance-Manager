@@ -9,7 +9,7 @@ A production-quality administrative web application built for college technical 
 ### 🔐 1. Authentication & Role-Based Access Control (RBAC)
 - **Coordinator Role**: Full operational privileges to manage student rosters, create attendance sessions, mark and submit attendance, perform corrections, and retry failed notifications.
 - **HOD (Head of Department) Role**: Read-only oversight access to view high-level analytics, low-attendance alerts, daily/monthly summaries, and audit logs.
-- **Security**: Passwords hashed with `bcryptjs`, session security via JWT, HTTP security headers using `Helmet`, CORS isolation, and rate-limiting on sensitive endpoints.
+- **Security**: Passwords hashed with `bcryptjs`, httpOnly cookie-based JWT with short-lived access tokens (15min) and refresh token rotation, HTTP security headers using `Helmet` with CSP, CORS isolation, rate-limiting on sensitive endpoints, and password reset via single-use tokens.
 
 ### 👥 2. Student Roster Management
 - Add, update, search, and filter technical team students.
@@ -46,7 +46,7 @@ A production-quality administrative web application built for college technical 
 | Layer | Technologies |
 |---|---|
 | **Frontend** | React (Vite), Vanilla CSS (Custom Design System), Lucide Icons, Recharts, Axios, React Router v6 |
-| **Backend** | Node.js, Express.js, JWT, Bcryptjs, Express-Validator, Rate-Limiter-Flexible, Helmet, Cors |
+| **Backend** | Node.js, Express.js, JWT (httpOnly cookies), Bcryptjs, Express-Validator, Rate-Limiter, Helmet, Cors |
 | **Database** | MongoDB (Mongoose ORM) + Embedded `MongoMemoryServer` fallback for instant out-of-the-box running |
 | **Email** | Nodemailer with styled responsive HTML email templates |
 
@@ -58,8 +58,17 @@ A production-quality administrative web application built for college technical 
 - Node.js (v18+)
 - npm (v9+)
 
-### 2. Launch the Application
-Run the root start command:
+### 2. Setup Environment
+```bash
+# Copy environment templates
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+
+# Enable demo data seeding (development only)
+# Edit backend/.env and set: ENABLE_DEMO_SEED=true
+```
+
+### 3. Launch the Application
 ```bash
 npm run dev
 ```
@@ -67,23 +76,25 @@ npm run dev
 This single command starts:
 1. **Backend Server** on `http://localhost:5001`
 2. **Frontend App** on `http://localhost:5173`
-3. **Embedded MongoDB Server** (automatically initialized and seeded with demo data if local MongoDB is not running).
+3. **Embedded MongoDB Server** (automatically initialized if local MongoDB is not running).
 
----
+### 4. Demo Credentials (Development Only)
 
-## 🔑 Demo Credentials
+> **Note:** Demo credentials are only available when `ENABLE_DEMO_SEED=true` in `backend/.env`. They are never seeded in production.
 
-| Role | Email | Password | Access Level |
-|---|---|---|---|
-| **Coordinator** | `coordinator@techteam.edu` | `coordinator123` | Full Access (Create, Mark, Submit, Edit, Retry) |
-| **HOD** | `hod@techteam.edu` | `hod123456` | Read-Only Oversight & Analytics |
+Run with demo seed enabled:
+```bash
+ENABLE_DEMO_SEED=true npm run dev
+```
+
+See `backend/seed/seed.js` for credential details used in the demo seed.
 
 ---
 
 ## 📁 Project Architecture
 
 ```
-Attendance Manager Antigravity/
+Attendance Manager/
 ├── backend/
 │   ├── config/          # MongoDB connection & Memory Server fallback
 │   ├── controllers/     # Controller layer (Auth, Student, Session, Attendance, Report, Notification, AuditLog)
@@ -98,9 +109,9 @@ Attendance Manager Antigravity/
 ├── frontend/
 │   ├── src/
 │   │   ├── components/  # Layout, common UI widgets, modals, stat cards
-│   │   ├── context/     # AuthContext for state & JWT management
+│   │   ├── context/     # AuthContext for state & cookie-based session management
 │   │   ├── pages/       # Login, Dashboard, Students, StudentProfile, Sessions, MarkAttendance, SessionDetail, Reports, Notifications, AuditLogs
-│   │   ├── services/    # Axios API client with auth interceptors
+│   │   ├── services/    # Axios API client with cookie auth & automatic token refresh
 │   │   ├── utils/       # Date formatters, color calculators, helper utilities
 │   │   └── index.css    # Custom CSS Design System
 │   ├── index.html       # HTML root entry point
@@ -114,9 +125,12 @@ Attendance Manager Antigravity/
 ## 🌐 API Endpoint Summary
 
 ### Authentication (`/api/auth`)
-- `POST /api/auth/login` - Authenticate user & receive JWT
-- `POST /api/auth/logout` - Clear user session
+- `POST /api/auth/login` - Authenticate user & receive session cookies
+- `POST /api/auth/refresh` - Refresh expired access token using refresh cookie
+- `POST /api/auth/logout` - Clear session cookies and invalidate refresh token
 - `GET  /api/auth/me` - Get current user profile
+- `POST /api/auth/forgot-password` - Send password reset email
+- `POST /api/auth/reset-password` - Reset password with token
 
 ### Students (`/api/students`)
 - `GET    /api/students` - List students (supports search, pagination, active filter)
@@ -145,5 +159,6 @@ Attendance Manager Antigravity/
 - `GET  /api/notifications` - View notification logs
 - `POST /api/notifications/:id/retry` - Retry failed notification (*Coordinator only*)
 - `GET  /api/audit-logs` - View system audit logs
-# Attendance-Manager
-# Full-Stack-Attendance-Manager
+
+### System
+- `GET /api/health` - Health check with database connection status

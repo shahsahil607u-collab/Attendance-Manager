@@ -57,6 +57,7 @@ const studentSchema = new mongoose.Schema({
 });
 
 studentSchema.index({ isActive: 1 });
+studentSchema.index({ email: 1 }, { unique: true });
 studentSchema.index({ fullName: 'text', rollNumber: 'text' });
 
 module.exports = mongoose.model('Student', studentSchema);

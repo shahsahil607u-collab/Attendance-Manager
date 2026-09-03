@@ -14,34 +14,32 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const savedUser = localStorage.getItem('user');
-    if (token && savedUser) {
-      try {
-        setUser(JSON.parse(savedUser));
-        // Verify token is still valid
-        api.get('/auth/me').then(res => {
-          setUser(res.data.data);
-          localStorage.setItem('user', JSON.stringify(res.data.data));
-        }).catch(() => { logout(); });
-      } catch { logout(); }
-    }
-    setLoading(false);
+    // On mount, check if the httpOnly cookie session is still valid
+    api.get('/auth/me')
+      .then(res => {
+        setUser(res.data.data);
+      })
+      .catch(() => {
+        setUser(null);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   const login = async (email, password) => {
     const res = await api.post('/auth/login', { email, password });
-    const { token, user: userData } = res.data.data;
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
+    const { user: userData } = res.data.data;
     setUser(userData);
     return userData;
   };
 
-  const logout = useCallback(() => {
-    api.post('/auth/logout').catch(() => {});
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+  const logout = useCallback(async () => {
+    try {
+      await api.post('/auth/logout');
+    } catch {
+      // Logout should always succeed client-side even if server call fails
+    }
     setUser(null);
   }, []);
 

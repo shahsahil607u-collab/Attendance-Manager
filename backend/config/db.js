@@ -1,7 +1,15 @@
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
+/**
+ * Seed initial demo data — only when ENABLE_DEMO_SEED=true.
+ * Prevents demo credentials from existing in production.
+ */
 const seedInitialDataIfNeeded = async () => {
+  if (process.env.ENABLE_DEMO_SEED !== 'true') {
+    return;
+  }
+
   const User = require('../models/User');
   const Student = require('../models/Student');
   const Setting = require('../models/Setting');
@@ -34,6 +42,7 @@ const seedInitialDataIfNeeded = async () => {
       { fullName: 'Karthik Menon', rollNumber: 'CS008', email: 'karthik.menon@student.edu', phone: '9876543217', department: 'Information Technology', semester: 5, year: 3, team: 'Technical Team' },
       { fullName: 'Divya Krishnan', rollNumber: 'IT001', email: 'divya.krishnan@student.edu', phone: '9876543218', department: 'Information Technology', semester: 5, year: 3, team: 'Technical Team' },
       { fullName: 'Rohan Desai', rollNumber: 'IT002', email: 'rohan.desai@student.edu', phone: '9876543219', department: 'Information Technology', semester: 3, year: 2, team: 'Technical Team' },
+      { fullName: 'Sahil Irshad', rollNumber: 'CS009', email: 'shahsahil607u@gmail.com', phone: '9876543220', department: 'Computer Science', semester: 5, year: 3, team: 'Technical Team' },
     ];
     await Student.insertMany(students);
 
@@ -41,10 +50,7 @@ const seedInitialDataIfNeeded = async () => {
     await Setting.create({ key: 'teamName', value: 'Technical Team', description: 'Name of the technical team' });
 
     console.log('✓ Demo data seeded successfully.');
-    console.log('  Coordinator: Sahil Irshad (coordinator@techteam.edu / coordinator123)');
-    console.log('  HOD:         hod@techteam.edu / hod123456');
-  } else {
-    await User.updateOne({ email: 'coordinator@techteam.edu' }, { name: 'Sahil Irshad' });
+    console.log('  Use demo credentials from .env.example or seed script.');
   }
 };
 

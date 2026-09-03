@@ -94,13 +94,39 @@ input, select, textarea { font-family: inherit; font-size: 0.875rem; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .form-textarea { resize: vertical; min-height: 80px; }
 
-/* Tables */
-.table-container { overflow-x: auto; }
+/* Tables – Excel / spreadsheet style with visible cell borders */
+.table-container { overflow-x: auto; border-radius: var(--radius-md); border: 2px solid var(--gray-300); }
 table { width: 100%; border-collapse: collapse; }
-thead { background: var(--gray-50); }
-th { padding: 10px 16px; text-align: left; font-size: 0.75rem; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid var(--gray-200); white-space: nowrap; }
-td { padding: 12px 16px; font-size: 0.875rem; color: var(--gray-700); border-bottom: 1px solid var(--gray-100); }
-tbody tr:hover { background: var(--gray-50); }
+thead { background: linear-gradient(180deg, var(--gray-100) 0%, var(--gray-50) 100%); position: sticky; top: 0; z-index: 2; }
+th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--gray-600);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border: 1px solid var(--gray-300);
+  border-top: none;
+  white-space: nowrap;
+  user-select: none;
+}
+th:first-child { border-left: none; }
+th:last-child { border-right: none; }
+td {
+  padding: 10px 14px;
+  font-size: 0.875rem;
+  color: var(--gray-700);
+  border: 1px solid var(--gray-200);
+  background: #fff;
+  transition: background var(--transition-fast);
+}
+td:first-child { border-left: none; }
+td:last-child { border-right: none; }
+/* Alternating row stripes */
+tbody tr:nth-child(even) td { background: var(--gray-50); }
+/* Hover – highlight the whole row like Excel selection */
+tbody tr:hover td { background: var(--primary-50); }
 tbody tr.clickable { cursor: pointer; }
 
 /* Badges */

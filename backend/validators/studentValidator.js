@@ -40,6 +40,10 @@ const updateStudentValidator = [
     .trim()
     .notEmpty().withMessage('Full name cannot be empty')
     .isLength({ max: 100 }).withMessage('Name cannot exceed 100 characters'),
+  body('rollNumber')
+    .optional()
+    .trim()
+    .isLength({ max: 20 }).withMessage('Roll number cannot exceed 20 characters'),
   body('email')
     .optional()
     .trim()
