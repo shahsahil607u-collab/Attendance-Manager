@@ -26,7 +26,7 @@ const seedInitialDataIfNeeded = async () => {
 
     await User.create({
       name: 'Prof. Rajesh Kumar',
-      email: 'hod@techteam.edu',
+      email: 'sahilirshad875@gmail.com',
       passwordHash: 'hod123456',
       role: 'hod',
     });
