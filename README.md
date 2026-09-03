@@ -146,3 +146,4 @@ Attendance Manager Antigravity/
 - `POST /api/notifications/:id/retry` - Retry failed notification (*Coordinator only*)
 - `GET  /api/audit-logs` - View system audit logs
 # Attendance-Manager
+# Full-Stack-Attendance-Manager
