@@ -8,9 +8,13 @@ const Layout = ({ children }) => {
         <div className="page-wrapper">
           {children}
         </div>
+        <footer className="app-footer">
+          Developed by <span className="developer-name">Sahil Irshad</span>
+        </footer>
       </div>
     </div>
   );
 };
 
 export default Layout;
+

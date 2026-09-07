@@ -5,10 +5,23 @@ const User = require('../models/User');
 const Student = require('../models/Student');
 const Setting = require('../models/Setting');
 
+const { MongoMemoryServer } = require('mongodb-memory-server');
+
+const connectSeedDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 2000 });
+    console.log('Connected to MongoDB');
+  } catch (err) {
+    console.warn('Local MongoDB not available. Starting MongoMemoryServer for seed...');
+    const mongod = await MongoMemoryServer.create();
+    await mongoose.connect(mongod.getUri());
+    console.log('Connected to MongoMemoryServer');
+  }
+};
+
 const seedData = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('Connected to MongoDB');
+    await connectSeedDB();
 
     // Clear existing data
     await User.deleteMany({});
@@ -35,13 +48,13 @@ const seedData = async () => {
 
     // Create sample students
     const students = [
-      { fullName: 'Rahul Sharma', rollNumber: 'CS001', email: 'rahul.sharma@student.edu', phone: '9876543210', department: 'Computer Science', semester: 5, year: 3, team: 'Technical Team' },
-      { fullName: 'Arjun Kumar', rollNumber: 'CS002', email: 'arjun.kumar@student.edu', phone: '9876543211', department: 'Computer Science', semester: 5, year: 3, team: 'Technical Team' },
-      { fullName: 'Sneha Rao', rollNumber: 'CS003', email: 'sneha.rao@student.edu', phone: '9876543212', department: 'Computer Science', semester: 5, year: 3, team: 'Technical Team' },
-      { fullName: 'Amit Patel', rollNumber: 'CS004', email: 'amit.patel@student.edu', phone: '9876543213', department: 'Computer Science', semester: 5, year: 3, team: 'Technical Team' },
-      { fullName: 'Priya Nair', rollNumber: 'CS005', email: 'priya.nair@student.edu', phone: '9876543214', department: 'Computer Science', semester: 3, year: 2, team: 'Technical Team' },
-      { fullName: 'Vikram Singh', rollNumber: 'CS006', email: 'vikram.singh@student.edu', phone: '9876543215', department: 'Computer Science', semester: 3, year: 2, team: 'Technical Team' },
-      { fullName: 'Ananya Gupta', rollNumber: 'CS007', email: 'ananya.gupta@student.edu', phone: '9876543216', department: 'Computer Science', semester: 7, year: 4, team: 'Technical Team' },
+      { fullName: 'Sahil Irshad', rollNumber: 'U19XH25S0051', email: 'shahsahil607u@gmail.com', phone: '9541868533', department: 'BCA', semester: 3, year: 2, team: 'Technical Team' },
+      { fullName: 'Sheikh Thanaz', rollNumber: 'CS002', email: 'arjun.kumar@student.edu', phone: '9876543211', department: 'Computer Science', semester: 5, year: 3, team: 'Technical Team' },
+      { fullName: 'Sai Mounish', rollNumber: 'CS003', email: 'sneha.rao@student.edu', phone: '9876543212', department: 'Computer Science', semester: 5, year: 3, team: 'Technical Team' },
+      { fullName: 'Sagarika Giri', rollNumber: 'CS004', email: 'amit.patel@student.edu', phone: '9876543213', department: 'Computer Science', semester: 5, year: 3, team: 'Technical Team' },
+      { fullName: 'Aishwariya', rollNumber: 'CS005', email: 'priya.nair@student.edu', phone: '9876543214', department: 'Computer Science', semester: 3, year: 2, team: 'Technical Team' },
+      { fullName: 'Purshottam', rollNumber: 'CS006', email: 'vikram.singh@student.edu', phone: '9876543215', department: 'Computer Science', semester: 3, year: 2, team: 'Technical Team' },
+      { fullName: 'Nirogi Abhishek', rollNumber: 'CS007', email: 'ananya.gupta@student.edu', phone: '9876543216', department: 'Computer Science', semester: 7, year: 4, team: 'Technical Team' },
       { fullName: 'Karthik Menon', rollNumber: 'CS008', email: 'karthik.menon@student.edu', phone: '9876543217', department: 'Information Technology', semester: 5, year: 3, team: 'Technical Team' },
       { fullName: 'Divya Krishnan', rollNumber: 'IT001', email: 'divya.krishnan@student.edu', phone: '9876543218', department: 'Information Technology', semester: 5, year: 3, team: 'Technical Team' },
       { fullName: 'Rohan Desai', rollNumber: 'IT002', email: 'rohan.desai@student.edu', phone: '9876543219', department: 'Information Technology', semester: 3, year: 2, team: 'Technical Team' },
