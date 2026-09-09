@@ -67,7 +67,7 @@ const Notifications = () => {
               <tbody>
                 {notifications.map(n => (
                   <tr key={n._id}>
-                    <td>{n.studentId?.fullName || 'HOD'}<br/><span style={{ fontSize: '0.75rem', color: 'var(--gray-400)' }}>{n.studentId?.rollNumber || ''}</span></td>
+                    <td>{n.studentId?.fullName || 'HOD'}<br/><span style={{ fontSize: '0.75rem', color: 'var(--gray-400)' }}>{n.studentId?.registrationNumber || ''}</span></td>
                     <td><span className="badge badge-info">{n.type === 'absent_email' ? 'Absent Email' : 'HOD Report'}</span></td>
                     <td style={{ fontSize: '0.8125rem' }}>{n.recipient}</td>
                     <td><span className={`badge badge-${n.status === 'sent' ? 'success' : n.status === 'failed' ? 'danger' : 'warning'}`}>{statusIcon(n.status)} {n.status}</span>

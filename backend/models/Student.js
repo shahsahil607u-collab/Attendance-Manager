@@ -7,13 +7,13 @@ const studentSchema = new mongoose.Schema({
     trim: true,
     maxlength: [100, 'Name cannot exceed 100 characters'],
   },
-  rollNumber: {
+  registrationNumber: {
     type: String,
-    required: [true, 'Roll number is required'],
+    required: [true, 'Registration number is required'],
     unique: true,
     uppercase: true,
     trim: true,
-    maxlength: [20, 'Roll number cannot exceed 20 characters'],
+    maxlength: [20, 'Registration number cannot exceed 20 characters'],
   },
   email: {
     type: String,
@@ -58,6 +58,6 @@ const studentSchema = new mongoose.Schema({
 
 studentSchema.index({ isActive: 1 });
 studentSchema.index({ email: 1 }, { unique: true });
-studentSchema.index({ fullName: 'text', rollNumber: 'text' });
+studentSchema.index({ fullName: 'text', registrationNumber: 'text' });
 
 module.exports = mongoose.model('Student', studentSchema);

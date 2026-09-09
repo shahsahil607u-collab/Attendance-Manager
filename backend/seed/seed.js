@@ -48,21 +48,15 @@ const seedData = async () => {
 
     // Create sample students
     const students = [
-      { fullName: 'Sahil Irshad', rollNumber: 'U19XH25S0051', email: 'shahsahil607u@gmail.com', phone: '9541868533', department: 'BCA', semester: 3, year: 2, team: 'Technical Team' },
-      { fullName: 'Sheikh Thanaz', rollNumber: 'CS002', email: 'arjun.kumar@student.edu', phone: '9876543211', department: 'Computer Science', semester: 5, year: 3, team: 'Technical Team' },
-      { fullName: 'Sai Mounish', rollNumber: 'CS003', email: 'sneha.rao@student.edu', phone: '9876543212', department: 'Computer Science', semester: 5, year: 3, team: 'Technical Team' },
-      { fullName: 'Sagarika Giri', rollNumber: 'CS004', email: 'amit.patel@student.edu', phone: '9876543213', department: 'Computer Science', semester: 5, year: 3, team: 'Technical Team' },
-      { fullName: 'Aishwariya', rollNumber: 'CS005', email: 'priya.nair@student.edu', phone: '9876543214', department: 'Computer Science', semester: 3, year: 2, team: 'Technical Team' },
-      { fullName: 'Purshottam', rollNumber: 'CS006', email: 'vikram.singh@student.edu', phone: '9876543215', department: 'Computer Science', semester: 3, year: 2, team: 'Technical Team' },
-      { fullName: 'Nirogi Abhishek', rollNumber: 'CS007', email: 'ananya.gupta@student.edu', phone: '9876543216', department: 'Computer Science', semester: 7, year: 4, team: 'Technical Team' },
-      { fullName: 'Karthik Menon', rollNumber: 'CS008', email: 'karthik.menon@student.edu', phone: '9876543217', department: 'Information Technology', semester: 5, year: 3, team: 'Technical Team' },
-      { fullName: 'Divya Krishnan', rollNumber: 'IT001', email: 'divya.krishnan@student.edu', phone: '9876543218', department: 'Information Technology', semester: 5, year: 3, team: 'Technical Team' },
-      { fullName: 'Rohan Desai', rollNumber: 'IT002', email: 'rohan.desai@student.edu', phone: '9876543219', department: 'Information Technology', semester: 3, year: 2, team: 'Technical Team' },
-      { fullName: 'Meera Iyer', rollNumber: 'CS009', email: 'meera.iyer@student.edu', phone: '9876543220', department: 'Computer Science', semester: 5, year: 3, team: 'Technical Team' },
-      { fullName: 'Aditya Verma', rollNumber: 'CS010', email: 'aditya.verma@student.edu', phone: '9876543221', department: 'Computer Science', semester: 7, year: 4, team: 'Technical Team' },
-      { fullName: 'Lakshmi Prasad', rollNumber: 'IT003', email: 'lakshmi.prasad@student.edu', phone: '9876543222', department: 'Information Technology', semester: 5, year: 3, team: 'Technical Team' },
-      { fullName: 'Nikhil Reddy', rollNumber: 'CS011', email: 'nikhil.reddy@student.edu', phone: '9876543223', department: 'Computer Science', semester: 3, year: 2, team: 'Technical Team' },
-      { fullName: 'Sanya Malhotra', rollNumber: 'CS012', email: 'sanya.malhotra@student.edu', phone: '9876543224', department: 'Computer Science', semester: 5, year: 3, team: 'Technical Team' },
+      { fullName: 'Sahil Irshad', registrationNumber: 'U19XH25S0051', email: 'shahsahil607u@gmail.com', phone: '9541868533', department: 'BCA', semester: 3, year: 2, team: 'Anveshak Team' },
+      { fullName: 'Sheikh Thanaaz', registrationNumber: 'U18FU24S0023', email: 'skthanaaz@gmail.com', phone: '7569737111', department: 'BCA', semester: 5, year: 3, team: 'Anveshak Team' },
+      { fullName: 'Sai Mounish Ashok', registrationNumber: 'U19XH25S0052', email: 'saimounish59@gmail.com', phone: '8310160136', department: 'BCA', semester: 3, year: 2, team: 'Anveshak Team' },
+      { fullName: 'AKAASH S', registrationNumber: 'U18FU24S0094', email: '8.akaash@gmail.com', phone: '9148171188', department: 'BCA', semester: 5, year: 3, team: 'Anveshak Team' },
+      { fullName: 'Zaid Sharif', registrationNumber: 'U18FU24S0066', email: 'ziozaid78@gmail.com', phone: '7204436967', department: 'BCA', semester: 3, year: 2, team: 'Anveshak Team' },
+      { fullName: 'Santhosh Gowda DA', registrationNumber: 'U18FU24S0047', email: 'santhoshagowda312@gmail.com', phone: '9986797021', department: 'BCA', semester: 3, year: 2, team: 'Anveshak Team' },
+      { fullName: 'Taskeen Sultana', registrationNumber: 'U18FU24S0051', email: 'taskeensultana405@gmail.com', phone: '9880963303', department: 'BCA', semester: 5, year: 3, team: 'Anveshak Team' },
+      { fullName: 'Abdul Hadi Pandit', registrationNumber: 'U18FU25S0020', email: 'pandithadipandit@gmail.com', phone: '7006756462', department: 'BCA', semester: 3, year: 2, team: 'Anveshak Team' },
+      { fullName: 'Wajid Shafi', registrationNumber: 'U18FU25S0015', email: 'waajidshafi3@gmail.com', phone: '6005411979', department: 'BCA', semester: 3, year: 2, team: 'Anveshak Team' },
     ];
 
     await Student.insertMany(students);
@@ -70,7 +64,7 @@ const seedData = async () => {
 
     // Create default settings
     await Setting.create({ key: 'attendanceThreshold', value: 75, description: 'Minimum attendance percentage required' });
-    await Setting.create({ key: 'teamName', value: 'Technical Team', description: 'Name of the technical team' });
+    await Setting.create({ key: 'teamName', value: 'Anveshak Team', description: 'Name of the technical team' });
     console.log('Created default settings');
 
     console.log('\n✓ Seed completed successfully!');

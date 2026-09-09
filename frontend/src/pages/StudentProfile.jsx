@@ -33,7 +33,7 @@ const StudentProfile = () => {
           <div>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: 4 }}>{student.fullName}</h2>
             <div style={{ display: 'flex', gap: 16, fontSize: '0.8125rem', color: 'var(--gray-500)', flexWrap: 'wrap' }}>
-              <span><BookOpen size={14} style={{ verticalAlign: 'text-bottom' }} /> {student.rollNumber}</span>
+              <span><BookOpen size={14} style={{ verticalAlign: 'text-bottom' }} /> {student.registrationNumber}</span>
               <span><Mail size={14} style={{ verticalAlign: 'text-bottom' }} /> {student.email}</span>
               <span><Phone size={14} style={{ verticalAlign: 'text-bottom' }} /> {student.phone}</span>
             </div>

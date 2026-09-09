@@ -12,7 +12,7 @@ const getNotifications = async (req, res, next) => {
     if (sessionId) query.sessionId = sessionId;
     const skip = (parseInt(page) - 1) * parseInt(limit);
     const [notifications, total] = await Promise.all([
-      Notification.find(query).populate('studentId', 'fullName rollNumber email').populate('sessionId', 'sessionName date topic').sort({ createdAt: -1 }).skip(skip).limit(parseInt(limit)),
+      Notification.find(query).populate('studentId', 'fullName registrationNumber email').populate('sessionId', 'sessionName date topic').sort({ createdAt: -1 }).skip(skip).limit(parseInt(limit)),
       Notification.countDocuments(query),
     ]);
     res.json({ success: true, data: { notifications, pagination: { page: parseInt(page), limit: parseInt(limit), total, pages: Math.ceil(total / parseInt(limit)) } } });
@@ -21,7 +21,7 @@ const getNotifications = async (req, res, next) => {
 
 const retryNotification = async (req, res, next) => {
   try {
-    const notification = await Notification.findById(req.params.id).populate('studentId', 'fullName rollNumber email').populate('sessionId', 'sessionName date topic startTime endTime');
+    const notification = await Notification.findById(req.params.id).populate('studentId', 'fullName registrationNumber email').populate('sessionId', 'sessionName date topic startTime endTime');
     if (!notification) return res.status(404).json({ success: false, message: 'Notification not found.' });
     if (notification.status === 'sent') return res.status(400).json({ success: false, message: 'Notification already sent.' });
 

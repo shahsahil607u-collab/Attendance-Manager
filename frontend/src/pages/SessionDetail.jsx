@@ -63,12 +63,12 @@ const SessionDetail = () => {
         <div className="card-header"><h3>Attendance Records</h3></div>
         <div className="table-container">
           <table>
-            <thead><tr><th>#</th><th>Roll No</th><th>Name</th><th>Status</th><th>Corrections</th>{isCoordinator && session.status !== 'draft' && <th>Action</th>}</tr></thead>
+            <thead><tr><th>#</th><th>Reg No</th><th>Name</th><th>Status</th><th>Corrections</th>{isCoordinator && session.status !== 'draft' && <th>Action</th>}</tr></thead>
             <tbody>
               {attendance.map((a, i) => (
                 <tr key={a._id} style={{ background: a.status === 'absent' ? 'var(--danger-50)' : undefined }}>
                   <td>{i + 1}</td>
-                  <td>{a.studentId?.rollNumber}</td>
+                  <td>{a.studentId?.registrationNumber}</td>
                   <td style={{ cursor: 'pointer', color: 'var(--primary-600)' }} onClick={() => navigate(`/students/${a.studentId?._id}`)}>{a.studentId?.fullName}</td>
                   <td><span className={`badge ${a.status === 'present' ? 'badge-success' : 'badge-danger'}`}>{a.status}</span></td>
                   <td>{a.correctionHistory?.length > 0 && <span className="badge badge-warning">{a.correctionHistory.length} correction(s)</span>}</td>
@@ -89,7 +89,7 @@ const SessionDetail = () => {
         </>}>
         {selectedRecord && (
           <>
-            <p><strong>{selectedRecord.studentId?.fullName}</strong> ({selectedRecord.studentId?.rollNumber})</p>
+            <p><strong>{selectedRecord.studentId?.fullName}</strong> ({selectedRecord.studentId?.registrationNumber})</p>
             <div style={{ margin: '16px 0', padding: 16, background: 'var(--gray-50)', borderRadius: 'var(--radius-sm)' }}>
               <div style={{ fontSize: '0.875rem' }}>
                 Current: <span className={`badge ${selectedRecord.status === 'present' ? 'badge-success' : 'badge-danger'}`}>{selectedRecord.status}</span>

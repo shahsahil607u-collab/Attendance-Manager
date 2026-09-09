@@ -35,11 +35,11 @@ const getStudents = async (req, res, next) => {
       query.team = team;
     }
 
-    // Search by name or roll number
+    // Search by name or registration number
     if (search) {
       query.$or = [
         { fullName: { $regex: search, $options: 'i' } },
-        { rollNumber: { $regex: search, $options: 'i' } },
+        { registrationNumber: { $regex: search, $options: 'i' } },
       ];
     }
 
@@ -100,20 +100,20 @@ const getStudent = async (req, res, next) => {
  */
 const createStudent = async (req, res, next) => {
   try {
-    const { fullName, rollNumber, email, phone, department, semester, year, team } = req.body;
+    const { fullName, registrationNumber, email, phone, department, semester, year, team } = req.body;
 
-    // Check for duplicate roll number
-    const existing = await Student.findOne({ rollNumber: rollNumber.toUpperCase() });
+    // Check for duplicate registration number
+    const existing = await Student.findOne({ registrationNumber: registrationNumber.toUpperCase() });
     if (existing) {
       return res.status(409).json({
         success: false,
-        message: 'A student with this roll number already exists.',
+        message: 'A student with this registration number already exists.',
       });
     }
 
     const student = await Student.create({
       fullName,
-      rollNumber,
+      registrationNumber,
       email,
       phone,
       department,
@@ -127,7 +127,7 @@ const createStudent = async (req, res, next) => {
       performedBy: req.user._id,
       targetType: 'Student',
       targetId: student._id,
-      description: `Created student ${fullName} (${rollNumber})`,
+      description: `Created student ${fullName} (${registrationNumber})`,
     });
 
     res.status(201).json({
@@ -154,18 +154,18 @@ const updateStudent = async (req, res, next) => {
       });
     }
 
-    // If roll number changed, check for duplicates
-    if (req.body.rollNumber && req.body.rollNumber.trim() !== '' && req.body.rollNumber.toUpperCase() !== student.rollNumber) {
-      const existing = await Student.findOne({ rollNumber: req.body.rollNumber.toUpperCase() });
+    // If registration number changed, check for duplicates
+    if (req.body.registrationNumber && req.body.registrationNumber.trim() !== '' && req.body.registrationNumber.toUpperCase() !== student.registrationNumber) {
+      const existing = await Student.findOne({ registrationNumber: req.body.registrationNumber.toUpperCase() });
       if (existing) {
         return res.status(409).json({
           success: false,
-          message: 'A student with this roll number already exists.',
+          message: 'A student with this registration number already exists.',
         });
       }
     }
 
-    const allowedFields = ['fullName', 'rollNumber', 'email', 'phone', 'department', 'semester', 'year', 'team'];
+    const allowedFields = ['fullName', 'registrationNumber', 'email', 'phone', 'department', 'semester', 'year', 'team'];
     allowedFields.forEach(field => {
       if (req.body[field] !== undefined) {
         student[field] = req.body[field];
@@ -179,7 +179,7 @@ const updateStudent = async (req, res, next) => {
       performedBy: req.user._id,
       targetType: 'Student',
       targetId: student._id,
-      description: `Updated student ${student.fullName} (${student.rollNumber})`,
+      description: `Updated student ${student.fullName} (${student.registrationNumber})`,
     });
 
     res.json({
@@ -216,7 +216,7 @@ const deactivateStudent = async (req, res, next) => {
       performedBy: req.user._id,
       targetType: 'Student',
       targetId: student._id,
-      description: `${action} student ${student.fullName} (${student.rollNumber})`,
+      description: `${action} student ${student.fullName} (${student.registrationNumber})`,
       metadata: { isActive: student.isActive },
     });
 

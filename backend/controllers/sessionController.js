@@ -92,9 +92,9 @@ const getSession = async (req, res, next) => {
 
     // Get attendance records for this session
     const attendance = await Attendance.find({ sessionId: session._id })
-      .populate('studentId', 'fullName rollNumber email')
+      .populate('studentId', 'fullName registrationNumber email')
       .populate('markedBy', 'name')
-      .sort({ 'studentId.rollNumber': 1 });
+      .sort({ 'studentId.registrationNumber': 1 });
 
     const presentCount = attendance.filter(a => a.status === 'present').length;
     const absentCount = attendance.filter(a => a.status === 'absent').length;
@@ -233,7 +233,7 @@ const submitSession = async (req, res, next) => {
 
     // Get attendance data for notifications
     const attendanceRecords = await Attendance.find({ sessionId: session._id })
-      .populate('studentId', 'fullName rollNumber email');
+      .populate('studentId', 'fullName registrationNumber email');
 
     const absentRecords = attendanceRecords.filter(a => a.status === 'absent');
     const presentCount = attendanceRecords.filter(a => a.status === 'present').length;
@@ -266,7 +266,7 @@ const submitSession = async (req, res, next) => {
       .filter(r => r.studentId)
       .map(r => ({
         fullName: r.studentId.fullName,
-        rollNumber: r.studentId.rollNumber,
+        registrationNumber: r.studentId.registrationNumber,
       }));
 
     sendHodReport({

@@ -5,10 +5,10 @@ const createStudentValidator = [
     .trim()
     .notEmpty().withMessage('Full name is required')
     .isLength({ max: 100 }).withMessage('Name cannot exceed 100 characters'),
-  body('rollNumber')
+  body('registrationNumber')
     .trim()
-    .notEmpty().withMessage('Roll number is required')
-    .isLength({ max: 20 }).withMessage('Roll number cannot exceed 20 characters'),
+    .notEmpty().withMessage('Registration number is required')
+    .isLength({ max: 20 }).withMessage('Registration number cannot exceed 20 characters'),
   body('email')
     .trim()
     .notEmpty().withMessage('Email is required')
@@ -40,10 +40,10 @@ const updateStudentValidator = [
     .trim()
     .notEmpty().withMessage('Full name cannot be empty')
     .isLength({ max: 100 }).withMessage('Name cannot exceed 100 characters'),
-  body('rollNumber')
+  body('registrationNumber')
     .optional()
     .trim()
-    .isLength({ max: 20 }).withMessage('Roll number cannot exceed 20 characters'),
+    .isLength({ max: 20 }).withMessage('Registration number cannot exceed 20 characters'),
   body('email')
     .optional()
     .trim()

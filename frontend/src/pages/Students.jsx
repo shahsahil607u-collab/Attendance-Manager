@@ -20,7 +20,7 @@ const Students = () => {
   const [showInactive, setShowInactive] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editStudent, setEditStudent] = useState(null);
-  const [formData, setFormData] = useState({ fullName: '', rollNumber: '', email: '', phone: '', department: 'Computer Science', semester: '', year: '', team: 'Technical Team' });
+  const [formData, setFormData] = useState({ fullName: '', registrationNumber: '', email: '', phone: '', department: 'Computer Science', semester: '', year: '', team: 'Technical Team' });
   const [formError, setFormError] = useState('');
   const [saving, setSaving] = useState(false);
 
@@ -29,7 +29,7 @@ const Students = () => {
   const fetchStudents = async () => {
     try {
       setLoading(true);
-      const res = await api.get('/students', { params: { page, limit: 15, search, isActive: showInactive ? undefined : true, sortBy: 'rollNumber', sortOrder: 'asc' } });
+      const res = await api.get('/students', { params: { page, limit: 15, search, isActive: showInactive ? undefined : true, sortBy: 'registrationNumber', sortOrder: 'asc' } });
       setStudents(res.data.data.students);
       setPagination(res.data.data.pagination);
     } catch (err) { console.error(err); } finally { setLoading(false); }
@@ -37,14 +37,14 @@ const Students = () => {
 
   const openAddForm = () => {
     setEditStudent(null);
-    setFormData({ fullName: '', rollNumber: '', email: '', phone: '', department: 'Computer Science', semester: '', year: '', team: 'Technical Team' });
+    setFormData({ fullName: '', registrationNumber: '', email: '', phone: '', department: 'Computer Science', semester: '', year: '', team: 'Technical Team' });
     setFormError('');
     setShowForm(true);
   };
 
   const openEditForm = (student) => {
     setEditStudent(student);
-    setFormData({ fullName: student.fullName, rollNumber: student.rollNumber, email: student.email, phone: student.phone, department: student.department || '', semester: student.semester || '', year: student.year || '', team: student.team || '' });
+    setFormData({ fullName: student.fullName, registrationNumber: student.registrationNumber, email: student.email, phone: student.phone, department: student.department || '', semester: student.semester || '', year: student.year || '', team: student.team || '' });
     setFormError('');
     setShowForm(true);
   };
@@ -52,7 +52,7 @@ const Students = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     setFormError('');
-    if (!formData.fullName || !formData.rollNumber || !formData.email || !formData.phone) {
+    if (!formData.fullName || !formData.registrationNumber || !formData.email || !formData.phone) {
       setFormError('Please fill in all required fields.'); return;
     }
     setSaving(true);
@@ -60,9 +60,9 @@ const Students = () => {
       const payload = { ...formData, semester: formData.semester ? Number(formData.semester) : undefined, year: formData.year ? Number(formData.year) : undefined };
 
       if (editStudent) {
-        // Exclude rollNumber from update payload — it's disabled in the form
+        // Exclude registrationNumber from update payload — it's disabled in the form
         // and sending it can cause duplicate-key crashes on the backend
-        const { rollNumber, ...updatePayload } = payload;
+        const { registrationNumber, ...updatePayload } = payload;
         await api.put(`/students/${editStudent._id}`, updatePayload);
       } else {
         await api.post('/students', payload);
@@ -95,7 +95,7 @@ const Students = () => {
       <div className="toolbar">
         <div className="search-input">
           <Search size={16} className="search-icon" />
-          <input className="form-input" placeholder="Search by name or roll number..." value={search}
+          <input className="form-input" placeholder="Search by name or registration number..." value={search}
             onChange={e => { setSearch(e.target.value); setPage(1); }} />
         </div>
         <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.8125rem', color: 'var(--gray-600)', cursor: 'pointer' }}>
@@ -112,7 +112,7 @@ const Students = () => {
               <thead>
                 <tr>
                   <th style={{ width: '48px', textAlign: 'center' }}>#</th>
-                  <th>Roll No</th>
+                  <th>Reg No</th>
                   <th>Name</th>
                   <th>Email</th>
                   <th>Phone</th>
@@ -128,7 +128,7 @@ const Students = () => {
                 {students.map((s, index) => (
                   <tr key={s._id}>
                     <td style={{ textAlign: 'center', color: 'var(--gray-400)', fontSize: '0.8125rem' }}>{serialOffset + index + 1}</td>
-                    <td><strong>{s.rollNumber}</strong></td>
+                    <td><strong>{s.registrationNumber}</strong></td>
                     <td style={{ cursor: 'pointer', color: 'var(--primary-600)', fontWeight: 500 }} onClick={() => navigate(`/students/${s._id}`)}>{s.fullName}</td>
                     <td style={{ fontSize: '0.8125rem' }}>{s.email}</td>
                     <td style={{ fontSize: '0.8125rem' }}>{s.phone}</td>
@@ -172,8 +172,8 @@ const Students = () => {
               <input className="form-input" value={formData.fullName} onChange={e => setFormData({ ...formData, fullName: e.target.value })} required />
             </div>
             <div className="form-group">
-              <label className="form-label">Roll Number *</label>
-              <input className="form-input" value={formData.rollNumber} onChange={e => setFormData({ ...formData, rollNumber: e.target.value })} required disabled={!!editStudent} />
+              <label className="form-label">Registration Number *</label>
+              <input className="form-input" value={formData.registrationNumber} onChange={e => setFormData({ ...formData, registrationNumber: e.target.value })} required disabled={!!editStudent} />
             </div>
           </div>
           <div className="form-row">

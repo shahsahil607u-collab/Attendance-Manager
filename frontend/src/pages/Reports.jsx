@@ -87,11 +87,11 @@ const Reports = () => {
               <div className="card-header"><h3>Student Attendance Summary</h3></div>
               <div className="table-container">
                 <table>
-                  <thead><tr><th>Student</th><th>Roll No</th><th>Classes</th><th>Present</th><th>Absent</th><th>Percentage</th></tr></thead>
+                  <thead><tr><th>Student</th><th>Reg No</th><th>Classes</th><th>Present</th><th>Absent</th><th>Percentage</th></tr></thead>
                   <tbody>
                     {data.studentStats.filter(s => s.totalClasses > 0).sort((a, b) => a.attendancePercentage - b.attendancePercentage).map(s => (
                       <tr key={s.student._id}>
-                        <td>{s.student.fullName}</td><td>{s.student.rollNumber}</td>
+                        <td>{s.student.fullName}</td><td>{s.student.registrationNumber}</td>
                         <td>{s.totalClasses}</td><td>{s.presentCount}</td><td>{s.absentCount}</td>
                         <td><span style={{ fontWeight: 600, color: getAttendanceColor(s.attendancePercentage, data.threshold) }}>{formatPercentage(s.attendancePercentage)}</span></td>
                       </tr>
@@ -117,7 +117,7 @@ const Reports = () => {
                 {s.absentStudents?.length > 0 && (
                   <div>
                     <div style={{ fontSize: '0.8125rem', fontWeight: 600, marginBottom: 4 }}>Absent Students:</div>
-                    {s.absentStudents.map((st, i) => <span key={i} className="badge badge-danger" style={{ marginRight: 6, marginBottom: 4 }}>{st.fullName} ({st.rollNumber})</span>)}
+                    {s.absentStudents.map((st, i) => <span key={i} className="badge badge-danger" style={{ marginRight: 6, marginBottom: 4 }}>{st.fullName} ({st.registrationNumber})</span>)}
                   </div>
                 )}
               </div>

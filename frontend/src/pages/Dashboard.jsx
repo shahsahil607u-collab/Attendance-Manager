@@ -142,12 +142,12 @@ const Dashboard = () => {
               <EmptyState title="All good!" message="No students below attendance threshold." />
             ) : (
               <table>
-                <thead><tr><th>Student</th><th>Roll No</th><th>Attendance</th></tr></thead>
+                <thead><tr><th>Student</th><th>Reg No</th><th>Attendance</th></tr></thead>
                 <tbody>
                   {lowAttendance.slice(0, 8).map(s => (
                     <tr key={s.student._id} className="clickable" onClick={() => navigate(`/students/${s.student._id}`)}>
                       <td>{s.student.fullName}</td>
-                      <td>{s.student.rollNumber}</td>
+                      <td>{s.student.registrationNumber}</td>
                       <td><span style={{ color: getAttendanceColor(s.attendancePercentage), fontWeight: 600 }}>⚠ {formatPercentage(s.attendancePercentage)}</span></td>
                     </tr>
                   ))}

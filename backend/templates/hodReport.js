@@ -14,7 +14,7 @@ const getHodReportHtml = ({ session, totalStudents, presentCount, absentCount, a
       <tr>
         <td style="padding: 8px 12px; border-bottom: 1px solid #e2e8f0; color: #4a5568; font-size: 14px;">${i + 1}</td>
         <td style="padding: 8px 12px; border-bottom: 1px solid #e2e8f0; color: #2d3748; font-size: 14px; font-weight: 500;">${s.fullName}</td>
-        <td style="padding: 8px 12px; border-bottom: 1px solid #e2e8f0; color: #4a5568; font-size: 14px;">${s.rollNumber}</td>
+        <td style="padding: 8px 12px; border-bottom: 1px solid #e2e8f0; color: #4a5568; font-size: 14px;">${s.registrationNumber}</td>
       </tr>
     `)
     .join('');
@@ -99,7 +99,7 @@ const getHodReportHtml = ({ session, totalStudents, presentCount, absentCount, a
                 <tr style="background-color: #f7fafc;">
                   <th style="padding: 10px 12px; text-align: left; color: #718096; font-size: 12px; text-transform: uppercase; border-bottom: 2px solid #e2e8f0;">#</th>
                   <th style="padding: 10px 12px; text-align: left; color: #718096; font-size: 12px; text-transform: uppercase; border-bottom: 2px solid #e2e8f0;">Name</th>
-                  <th style="padding: 10px 12px; text-align: left; color: #718096; font-size: 12px; text-transform: uppercase; border-bottom: 2px solid #e2e8f0;">Roll No</th>
+                  <th style="padding: 10px 12px; text-align: left; color: #718096; font-size: 12px; text-transform: uppercase; border-bottom: 2px solid #e2e8f0;">Reg No</th>
                 </tr>
                 ${absentRows}
               </table>

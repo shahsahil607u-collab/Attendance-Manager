@@ -26,7 +26,7 @@ const MarkAttendance = () => {
       setLoading(true);
       const [sessionRes, studentsRes] = await Promise.all([
         api.get(`/sessions/${id}`),
-        api.get('/students', { params: { isActive: true, limit: 500, sortBy: 'rollNumber', sortOrder: 'asc' } }),
+        api.get('/students', { params: { isActive: true, limit: 500, sortBy: 'registrationNumber', sortOrder: 'asc' } }),
       ]);
       const sess = sessionRes.data.data.session;
       setSession(sess);
@@ -85,7 +85,7 @@ const MarkAttendance = () => {
 
   const filtered = students.filter(s =>
     s.fullName.toLowerCase().includes(search.toLowerCase()) ||
-    s.rollNumber.toLowerCase().includes(search.toLowerCase())
+    s.registrationNumber.toLowerCase().includes(search.toLowerCase())
   );
   const presentCount = Object.values(attendance).filter(s => s === 'present').length;
   const absentCount = Object.values(attendance).filter(s => s === 'absent').length;
@@ -129,12 +129,12 @@ const MarkAttendance = () => {
           <div className="card">
             <div className="table-container">
               <table>
-                <thead><tr><th style={{ width: 60 }}>#</th><th>Roll No</th><th>Student Name</th><th style={{ width: 200 }}>Status</th></tr></thead>
+                <thead><tr><th style={{ width: 60 }}>#</th><th>Reg No</th><th>Student Name</th><th style={{ width: 200 }}>Status</th></tr></thead>
                 <tbody>
                   {filtered.map((s, i) => (
                     <tr key={s._id} style={{ background: attendance[s._id] === 'absent' ? 'var(--danger-50)' : undefined }}>
                       <td>{i + 1}</td>
-                      <td><strong>{s.rollNumber}</strong></td>
+                      <td><strong>{s.registrationNumber}</strong></td>
                       <td>{s.fullName}</td>
                       <td>
                         <div className="attendance-controls">
@@ -173,11 +173,11 @@ const MarkAttendance = () => {
           <div className="card-header"><h3>Attendance Records</h3></div>
           <div className="table-container">
             <table>
-              <thead><tr><th>#</th><th>Roll No</th><th>Name</th><th>Status</th></tr></thead>
+              <thead><tr><th>#</th><th>Reg No</th><th>Name</th><th>Status</th></tr></thead>
               <tbody>
                 {filtered.map((s, i) => (
                   <tr key={s._id} style={{ background: attendance[s._id] === 'absent' ? 'var(--danger-50)' : undefined }}>
-                    <td>{i + 1}</td><td>{s.rollNumber}</td><td>{s.fullName}</td>
+                    <td>{i + 1}</td><td>{s.registrationNumber}</td><td>{s.fullName}</td>
                     <td><span className={`badge ${attendance[s._id] === 'present' ? 'badge-success' : 'badge-danger'}`}>{attendance[s._id] || 'N/A'}</span></td>
                   </tr>
                 ))}

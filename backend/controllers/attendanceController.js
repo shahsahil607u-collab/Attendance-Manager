@@ -29,7 +29,7 @@ const getSessionAttendance = async (req, res, next) => {
     const session = await Session.findById(req.params.sessionId);
     if (!session) return res.status(404).json({ success: false, message: 'Session not found.' });
     const attendance = await Attendance.find({ sessionId: req.params.sessionId })
-      .populate('studentId', 'fullName rollNumber email phone').populate('markedBy', 'name');
+      .populate('studentId', 'fullName registrationNumber email phone').populate('markedBy', 'name');
     const presentCount = attendance.filter(a => a.status === 'present').length;
     const absentCount = attendance.filter(a => a.status === 'absent').length;
     res.json({ success: true, data: { session, attendance, summary: { totalStudents: attendance.length, presentCount, absentCount, attendancePercentage: attendance.length > 0 ? (presentCount / attendance.length) * 100 : 0 } } });
@@ -52,7 +52,7 @@ const getStudentAttendance = async (req, res, next) => {
 const correctAttendance = async (req, res, next) => {
   try {
     const { attendanceId, newStatus, reason } = req.body;
-    const attendance = await Attendance.findById(attendanceId).populate('studentId', 'fullName rollNumber').populate('sessionId', 'sessionName date');
+    const attendance = await Attendance.findById(attendanceId).populate('studentId', 'fullName registrationNumber').populate('sessionId', 'sessionName date');
     if (!attendance) return res.status(404).json({ success: false, message: 'Attendance record not found.' });
     if (attendance.status === newStatus) return res.status(400).json({ success: false, message: `Already marked as ${newStatus}.` });
     const previousStatus = attendance.status;

@@ -11,10 +11,10 @@ const getDailyReport = async (req, res, next) => {
     const endOfDay = new Date(targetDate); endOfDay.setHours(23, 59, 59, 999);
     const sessions = await Session.find({ date: { $gte: startOfDay, $lte: endOfDay }, status: { $ne: 'draft' } }).lean();
     const report = await Promise.all(sessions.map(async (session) => {
-      const records = await Attendance.find({ sessionId: session._id }).populate('studentId', 'fullName rollNumber');
+      const records = await Attendance.find({ sessionId: session._id }).populate('studentId', 'fullName registrationNumber');
       const present = records.filter(r => r.status === 'present');
       const absent = records.filter(r => r.status === 'absent');
-      return { session, totalStudents: records.length, presentCount: present.length, absentCount: absent.length, attendancePercentage: records.length > 0 ? (present.length / records.length) * 100 : 0, absentStudents: absent.filter(r => r.studentId).map(r => ({ fullName: r.studentId.fullName, rollNumber: r.studentId.rollNumber })) };
+      return { session, totalStudents: records.length, presentCount: present.length, absentCount: absent.length, attendancePercentage: records.length > 0 ? (present.length / records.length) * 100 : 0, absentStudents: absent.filter(r => r.studentId).map(r => ({ fullName: r.studentId.fullName, registrationNumber: r.studentId.registrationNumber })) };
     }));
     res.json({ success: true, data: { date: targetDate.toISOString().split('T')[0], sessions: report } });
   } catch (error) { next(error); }
@@ -35,7 +35,7 @@ const getMonthlyReport = async (req, res, next) => {
       const records = await Attendance.find({ studentId: student._id, sessionId: { $in: sessions.map(s => s._id) } });
       const present = records.filter(r => r.status === 'present').length;
       const total = records.length;
-      return { student: { _id: student._id, fullName: student.fullName, rollNumber: student.rollNumber }, totalClasses: total, presentCount: present, absentCount: total - present, attendancePercentage: total > 0 ? (present / total) * 100 : 0 };
+      return { student: { _id: student._id, fullName: student.fullName, registrationNumber: student.registrationNumber }, totalClasses: total, presentCount: present, absentCount: total - present, attendancePercentage: total > 0 ? (present / total) * 100 : 0 };
     }));
     const totalSessions = sessions.length;
     const avgAttendance = studentStats.length > 0 ? studentStats.reduce((sum, s) => sum + s.attendancePercentage, 0) / studentStats.length : 0;
@@ -68,11 +68,11 @@ const exportReport = async (req, res, next) => {
       const startOfDay = new Date(targetDate); startOfDay.setHours(0, 0, 0, 0);
       const endOfDay = new Date(targetDate); endOfDay.setHours(23, 59, 59, 999);
       const sessions = await Session.find({ date: { $gte: startOfDay, $lte: endOfDay }, status: { $ne: 'draft' } });
-      csvData = 'Session,Topic,Date,Student,Roll Number,Status\n';
+      csvData = 'Session,Topic,Date,Student,Registration Number,Status\n';
       for (const session of sessions) {
-        const records = await Attendance.find({ sessionId: session._id }).populate('studentId', 'fullName rollNumber');
+        const records = await Attendance.find({ sessionId: session._id }).populate('studentId', 'fullName registrationNumber');
         for (const r of records) {
-          if (r.studentId) csvData += `"${session.sessionName}","${session.topic}","${new Date(session.date).toLocaleDateString()}","${r.studentId.fullName}","${r.studentId.rollNumber}","${r.status}"\n`;
+          if (r.studentId) csvData += `"${session.sessionName}","${session.topic}","${new Date(session.date).toLocaleDateString()}","${r.studentId.fullName}","${r.studentId.registrationNumber}","${r.status}"\n`;
         }
       }
     } else {
@@ -81,14 +81,14 @@ const exportReport = async (req, res, next) => {
       const startDate = new Date(y, m - 1, 1);
       const endDate = new Date(y, m, 0, 23, 59, 59, 999);
       const sessions = await Session.find({ date: { $gte: startDate, $lte: endDate }, status: { $ne: 'draft' } });
-      const students = await Student.find({ isActive: true }).sort({ rollNumber: 1 });
-      csvData = 'Student,Roll Number,Total Classes,Present,Absent,Percentage\n';
+      const students = await Student.find({ isActive: true }).sort({ registrationNumber: 1 });
+      csvData = 'Student,Registration Number,Total Classes,Present,Absent,Percentage\n';
       for (const student of students) {
         const records = await Attendance.find({ studentId: student._id, sessionId: { $in: sessions.map(s => s._id) } });
         const present = records.filter(r => r.status === 'present').length;
         const total = records.length;
         const pct = total > 0 ? ((present / total) * 100).toFixed(2) : 'N/A';
-        csvData += `"${student.fullName}","${student.rollNumber}",${total},${present},${total - present},${pct}\n`;
+        csvData += `"${student.fullName}","${student.registrationNumber}",${total},${present},${total - present},${pct}\n`;
       }
     }
     res.setHeader('Content-Type', 'text/csv');
