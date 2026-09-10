@@ -49,7 +49,7 @@ const seedData = async () => {
     // Create sample students
     const students = [
       { fullName: 'Sahil Irshad', registrationNumber: 'U19XH25S0051', email: 'shahsahil607u@gmail.com', phone: '9541868533', department: 'BCA', semester: 3, year: 2, team: 'Anveshak Team' },
-      { fullName: 'Sheikh Thanaaz', registrationNumber: 'U18FU24S0023', email: 'skthanaaz@gmail.com', phone: '7569737111', department: 'BCA', semester: 5, year: 3, team: 'Anveshak Team' },
+      { fullName: 'Shaik Thanaaz', registrationNumber: 'U18FU24S0023', email: 'skthanaaz@gmail.com', phone: '7569737111', department: 'BCA', semester: 5, year: 3, team: 'Anveshak Team' },
       { fullName: 'Sai Mounish Ashok', registrationNumber: 'U19XH25S0052', email: 'saimounish59@gmail.com', phone: '8310160136', department: 'BCA', semester: 3, year: 2, team: 'Anveshak Team' },
       { fullName: 'AKAASH S', registrationNumber: 'U18FU24S0094', email: '8.akaash@gmail.com', phone: '9148171188', department: 'BCA', semester: 5, year: 3, team: 'Anveshak Team' },
       { fullName: 'Zaid Sharif', registrationNumber: 'U18FU24S0066', email: 'ziozaid78@gmail.com', phone: '7204436967', department: 'BCA', semester: 3, year: 2, team: 'Anveshak Team' },
@@ -57,6 +57,13 @@ const seedData = async () => {
       { fullName: 'Taskeen Sultana', registrationNumber: 'U18FU24S0051', email: 'taskeensultana405@gmail.com', phone: '9880963303', department: 'BCA', semester: 5, year: 3, team: 'Anveshak Team' },
       { fullName: 'Abdul Hadi Pandit', registrationNumber: 'U18FU25S0020', email: 'pandithadipandit@gmail.com', phone: '7006756462', department: 'BCA', semester: 3, year: 2, team: 'Anveshak Team' },
       { fullName: 'Wajid Shafi', registrationNumber: 'U18FU25S0015', email: 'waajidshafi3@gmail.com', phone: '6005411979', department: 'BCA', semester: 3, year: 2, team: 'Anveshak Team' },
+      { fullName: 'Rohan Desai', registrationNumber: 'IT002', email: 'rohan.desai@student.edu', phone: '9876543219', department: 'BCA', semester: 3, year: 2, team: 'Anveshak Team' },
+      { fullName: 'Meera Iyer', registrationNumber: 'CS009', email: 'meera.iyer@student.edu', phone: '9876543220', department: 'BCA', semester: 5, year: 3, team: 'Anveshak Team' },
+      { fullName: 'Aditya Verma', registrationNumber: 'CS010', email: 'aditya.verma@student.edu', phone: '9876543221', department: 'BCA', semester: 5, year: 3, team: 'Anveshak Team' },
+      { fullName: 'Lakshmi Prasad', registrationNumber: 'IT003', email: 'lakshmi.prasad@student.edu', phone: '9876543222', department: 'BCA', semester: 5, year: 3, team: 'Anveshak Team' },
+      { fullName: 'Nikhil Reddy', registrationNumber: 'CS011', email: 'nikhil.reddy@student.edu', phone: '9876543223', department: 'BCA', semester: 3, year: 2, team: 'Anveshak Team' },
+      { fullName: 'Sanya Malhotra', registrationNumber: 'CS012', email: 'sanya.malhotra@student.edu', phone: '9876543224', department: 'BCA', semester: 5, year: 3, team: 'Anveshak Team' },
+      { fullName: 'N.V.S.S Abhishek', registrationNumber: 'U19XH25S0036', email: 'abhishek27127@gmail.com', phone: '9035018208', department: 'BCA', semester: 3, year: 2, team: 'Anveshak Team' },
     ];
 
     await Student.insertMany(students);
