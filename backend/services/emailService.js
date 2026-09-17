@@ -16,6 +16,11 @@ const sendViaBrevo = async ({ to, subject, html, text }) => {
   const senderEmail = process.env.FROM_EMAIL || process.env.SMTP_USER || 'attendanceanveshak.system@gmail.com';
   const senderName = 'Technical Team Attendance';
 
+  const maskedKey = apiKey.length > 15
+    ? `${apiKey.slice(0, 10)}...${apiKey.slice(-4)} (len: ${apiKey.length})`
+    : `(len: ${apiKey.length}, preview: ${apiKey.slice(0, 4)}...)`;
+  console.log(`ℹ Attempting Brevo delivery with key: ${maskedKey} | sender: ${senderEmail}`);
+
   const response = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
     headers: {
@@ -34,6 +39,7 @@ const sendViaBrevo = async ({ to, subject, html, text }) => {
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
+    console.error(`❌ Brevo API returned HTTP ${response.status}:`, JSON.stringify(errorData));
     throw new Error(errorData.message || `Brevo API error status ${response.status}`);
   }
 
