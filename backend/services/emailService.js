@@ -9,17 +9,48 @@ let isEthereal = false;
  * Brevo sends over HTTPS (port 443), which is 100% unrestricted on Render.
  * Free tier: 300 emails/day to any recipient.
  */
+const getBrevoKey = () => {
+  const candidates = [
+    process.env.BREVO_API_KEY,
+    process.env.BREVO_KEY,
+    process.env.BREVO_APIKEY,
+    process.env.brevo_api_key,
+    process.env.SMTP_PASSWORD && process.env.SMTP_PASSWORD.trim().startsWith('xkeysib-') ? process.env.SMTP_PASSWORD : null,
+  ];
+  for (const c of candidates) {
+    if (c && c.trim()) return c.trim();
+  }
+  return null;
+};
+
+const getGoogleWebhook = () => {
+  return (
+    process.env.GMAIL_WEBHOOK_URL ||
+    process.env.GOOGLE_WEBHOOK_URL ||
+    process.env.WEBHOOK_URL ||
+    ''
+  ).trim();
+};
+
+/**
+ * Send email using Brevo (formerly Sendinblue) HTTP REST API (Port 443 - HTTPS)
+ * Render free tier blocks outbound SMTP ports 25, 465, and 587.
+ * Brevo sends over HTTPS (port 443), which is 100% unrestricted on Render.
+ * Free tier: 300 emails/day to any recipient.
+ */
 const sendViaBrevo = async ({ to, subject, html, text }) => {
-  const apiKey = (process.env.BREVO_API_KEY || '').trim();
+  const apiKey = getBrevoKey();
   if (!apiKey) return null;
 
-  const senderEmail = process.env.FROM_EMAIL || process.env.SMTP_USER || 'attendanceanveshak.system@gmail.com';
+  const rawSender = process.env.FROM_EMAIL || process.env.SMTP_USER || 'attendanceanveshak.system@gmail.com';
+  const match = rawSender.match(/<([^>]+)>/);
+  const cleanSenderEmail = (match ? match[1] : rawSender).trim();
   const senderName = 'Technical Team Attendance';
 
   const maskedKey = apiKey.length > 15
     ? `${apiKey.slice(0, 10)}...${apiKey.slice(-4)} (len: ${apiKey.length})`
     : `(len: ${apiKey.length}, preview: ${apiKey.slice(0, 4)}...)`;
-  console.log(`ℹ Attempting Brevo delivery with key: ${maskedKey} | sender: ${senderEmail}`);
+  console.log(`ℹ Attempting Brevo delivery with key: ${maskedKey} | sender: ${cleanSenderEmail} | to: ${to}`);
 
   const response = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
@@ -29,7 +60,7 @@ const sendViaBrevo = async ({ to, subject, html, text }) => {
       'content-type': 'application/json',
     },
     body: JSON.stringify({
-      sender: { name: senderName, email: senderEmail },
+      sender: { name: senderName, email: cleanSenderEmail },
       to: [{ email: to }],
       subject,
       htmlContent: html,
@@ -180,7 +211,8 @@ const initializeTransporter = async () => {
 const sendEmail = async ({ to, subject, html, text }) => {
   try {
     // 1. Brevo HTTPS API (Recommended for Render free tier)
-    if (process.env.BREVO_API_KEY) {
+    const brevoKey = getBrevoKey();
+    if (brevoKey) {
       const res = await sendViaBrevo({ to, subject, html, text });
       console.log(`\n📧 [EMAIL SENT VIA BREVO] To: ${to} | Subject: "${subject}"\n`);
       return res;
@@ -194,7 +226,8 @@ const sendEmail = async ({ to, subject, html, text }) => {
     }
 
     // 3. Google Apps Script Webhook (Sends directly through Gmail via HTTPS)
-    if (process.env.GMAIL_WEBHOOK_URL) {
+    const webhookUrl = getGoogleWebhook();
+    if (webhookUrl) {
       const res = await sendViaGoogleWebhook({ to, subject, html, text });
       console.log(`\n📧 [EMAIL SENT VIA GOOGLE APPS SCRIPT] To: ${to} | Subject: "${subject}"\n`);
       return res;
