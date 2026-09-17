@@ -60,11 +60,7 @@ const Login = () => {
             {loading ? <><div className="spinner" style={{ borderTopColor: '#fff' }}></div> Signing in...</> : 'Sign In'}
           </button>
         </form>
-        <div style={{ marginTop: 24, padding: '12px 16px', background: 'var(--gray-50)', borderRadius: 'var(--radius-sm)', fontSize: '0.75rem', color: 'var(--gray-500)' }}>
-          <div style={{ fontWeight: 600, marginBottom: 4 }}>Demo Credentials</div>
-          <div>Coordinator: coordinator@techteam.edu / coordinator123</div>
-          <div>HOD: sahilirshad875@gmail.com / hod123456</div>
-        </div>
+
       </div>
     </div>
   );
