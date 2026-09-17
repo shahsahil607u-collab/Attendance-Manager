@@ -10,27 +10,38 @@ let isEthereal = false;
  * Free tier: 300 emails/day to any recipient.
  */
 const getBrevoKey = () => {
-  const candidates = [
-    process.env.BREVO_API_KEY,
-    process.env.BREVO_KEY,
-    process.env.BREVO_APIKEY,
-    process.env.brevo_api_key,
-    process.env.SMTP_PASSWORD && process.env.SMTP_PASSWORD.trim().startsWith('xkeysib-') ? process.env.SMTP_PASSWORD : null,
-  ];
-  for (const c of candidates) {
-    if (c && c.trim()) return c.trim();
+  // 1. Check any env key containing 'brevo' (case-insensitive, trims key and value)
+  for (const [key, val] of Object.entries(process.env)) {
+    if (key.trim().toLowerCase().includes('brevo') && val && val.trim()) {
+      return val.trim();
+    }
+  }
+  // 2. Check if ANY env value in process.env starts with 'xkeysib-'
+  for (const [key, val] of Object.entries(process.env)) {
+    if (typeof val === 'string' && val.trim().startsWith('xkeysib-')) {
+      return val.trim();
+    }
   }
   return null;
 };
 
 const getGoogleWebhook = () => {
-  return (
-    process.env.GMAIL_WEBHOOK_URL ||
-    process.env.GOOGLE_WEBHOOK_URL ||
-    process.env.WEBHOOK_URL ||
-    ''
-  ).trim();
+  for (const [key, val] of Object.entries(process.env)) {
+    if (key.trim().toLowerCase().includes('webhook') && val && val.trim()) {
+      return val.trim();
+    }
+  }
+  return '';
 };
+
+// Immediate startup check
+const _initBrevoKey = getBrevoKey();
+if (_initBrevoKey) {
+  console.log(`✓ Brevo HTTPS Email Service ready! Key starts with: ${_initBrevoKey.slice(0, 10)}... (length: ${_initBrevoKey.length})`);
+} else {
+  const _nonSecretKeys = Object.keys(process.env).filter(k => !k.includes('SECRET') && !k.includes('PASS'));
+  console.log(`ℹ Email Service: No Brevo or Webhook key found. Present env keys: [${_nonSecretKeys.join(', ')}]`);
+}
 
 /**
  * Send email using Brevo (formerly Sendinblue) HTTP REST API (Port 443 - HTTPS)
