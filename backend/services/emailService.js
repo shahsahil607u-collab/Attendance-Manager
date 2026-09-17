@@ -10,7 +10,7 @@ let isEthereal = false;
  * Free tier: 300 emails/day to any recipient.
  */
 const sendViaBrevo = async ({ to, subject, html, text }) => {
-  const apiKey = process.env.BREVO_API_KEY;
+  const apiKey = (process.env.BREVO_API_KEY || '').trim();
   if (!apiKey) return null;
 
   const senderEmail = process.env.FROM_EMAIL || process.env.SMTP_USER || 'attendanceanveshak.system@gmail.com';
