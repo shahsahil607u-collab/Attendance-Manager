@@ -5,7 +5,7 @@ import api from '../services/api';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import Modal from '../components/common/Modal';
 import { formatDate, formatPercentage, getErrorMessage } from '../utils/helpers';
-import { ArrowLeft, Edit } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2 } from 'lucide-react';
 
 const SessionDetail = () => {
   const { id } = useParams();
@@ -34,13 +34,36 @@ const SessionDetail = () => {
     } catch (err) { alert(getErrorMessage(err)); } finally { setCorrecting(false); }
   };
 
+  const handleDelete = async () => {
+    if (!window.confirm(`Are you sure you want to delete session "${session.sessionName}"? This will permanently delete this session and its attendance records.`)) {
+      return;
+    }
+    try {
+      await api.delete(`/sessions/${id}`);
+      navigate('/sessions');
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to delete session.');
+    }
+  };
+
   if (loading) return <LoadingSpinner />;
   if (!data) return <div className="alert alert-error">Session not found.</div>;
   const { session, attendance, summary } = data;
 
   return (
     <div>
-      <button className="btn btn-ghost" onClick={() => navigate(-1)} style={{ marginBottom: 16 }}><ArrowLeft size={18} /> Back</button>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <button className="btn btn-ghost" onClick={() => navigate(-1)}><ArrowLeft size={18} /> Back</button>
+        {isCoordinator && (
+          <button
+            className="btn btn-outline btn-sm"
+            style={{ color: 'var(--danger-600)', borderColor: 'var(--danger-300)', display: 'flex', alignItems: 'center', gap: 6 }}
+            onClick={handleDelete}
+          >
+            <Trash2 size={16} /> Delete Session
+          </button>
+        )}
+      </div>
       <div className="card" style={{ marginBottom: 20 }}>
         <div className="card-body">
           <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>

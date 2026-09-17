@@ -6,7 +6,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
 import Pagination from '../components/common/Pagination';
 import { formatDate } from '../utils/helpers';
-import { Plus, Eye, Send, CalendarCheck } from 'lucide-react';
+import { Plus, Eye, Send, CalendarCheck, Trash2 } from 'lucide-react';
 
 const Sessions = () => {
   const { isCoordinator } = useAuth();
@@ -39,6 +39,18 @@ const Sessions = () => {
       const res = await api.post('/sessions', form);
       navigate(`/sessions/${res.data.data._id}/mark`);
     } catch (err) { setError(err.response?.data?.message || 'Failed to create session.'); } finally { setCreating(false); }
+  };
+
+  const handleDeleteSession = async (sessionId, sessionName) => {
+    if (!window.confirm(`Are you sure you want to delete session "${sessionName}"? This will also remove its attendance records.`)) {
+      return;
+    }
+    try {
+      await api.delete(`/sessions/${sessionId}`);
+      fetchSessions();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to delete session.');
+    }
   };
 
   return (
@@ -96,6 +108,16 @@ const Sessions = () => {
                       <div style={{ display: 'flex', gap: 4 }}>
                         <button className="btn btn-ghost btn-sm btn-icon" title="View" onClick={() => navigate(`/sessions/${s._id}`)}><Eye size={16} /></button>
                         {isCoordinator && s.status === 'draft' && <button className="btn btn-ghost btn-sm btn-icon" title="Mark Attendance" onClick={() => navigate(`/sessions/${s._id}/mark`)}><Send size={16} /></button>}
+                        {isCoordinator && (
+                          <button
+                            className="btn btn-ghost btn-sm btn-icon"
+                            title="Delete Session"
+                            style={{ color: 'var(--danger-600)' }}
+                            onClick={() => handleDeleteSession(s._id, s.sessionName)}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

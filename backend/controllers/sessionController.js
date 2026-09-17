@@ -1,6 +1,7 @@
 const Session = require('../models/Session');
 const Attendance = require('../models/Attendance');
 const Student = require('../models/Student');
+const Notification = require('../models/Notification');
 const { createAuditLog } = require('../services/auditService');
 const { sendAbsentNotifications, sendHodReport } = require('../services/notificationService');
 
@@ -299,4 +300,38 @@ const submitSession = async (req, res, next) => {
   }
 };
 
-module.exports = { getSessions, getSession, createSession, updateSession, submitSession };
+/**
+ * DELETE /api/sessions/:id
+ */
+const deleteSession = async (req, res, next) => {
+  try {
+    const session = await Session.findById(req.params.id);
+    if (!session) {
+      return res.status(404).json({ success: false, message: 'Session not found' });
+    }
+
+    // Cascade delete attendance and notification records for this session
+    await Promise.all([
+      Attendance.deleteMany({ sessionId: session._id }),
+      Notification.deleteMany({ sessionId: session._id }),
+      Session.findByIdAndDelete(session._id),
+    ]);
+
+    await createAuditLog({
+      action: 'SESSION_DELETED',
+      performedBy: req.user._id,
+      targetType: 'Session',
+      targetId: session._id,
+      description: `Deleted session "${session.sessionName}" (${session.topic || 'No topic'})`,
+    });
+
+    res.json({
+      success: true,
+      message: 'Session deleted successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getSessions, getSession, createSession, updateSession, submitSession, deleteSession };
