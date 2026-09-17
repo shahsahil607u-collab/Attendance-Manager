@@ -8,6 +8,8 @@
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
     "start": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "start:backend": "cd backend && node server.js",
+    "postinstall": "cd backend && npm install",
     "seed": "cd backend && npm run seed"
   },
   "devDependencies": {
