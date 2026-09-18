@@ -40,8 +40,8 @@ const seedData = async () => {
 
     const hod = await User.create({
       name: 'Prof. Rajesh Kumar',
-      email: 'sahilirshad875@gmail.com',
-      passwordHash: 'hod123456',
+      email: 'agcmscshod@gmail.com',
+      passwordHash: 'Anveshak@5271',
       role: 'hod',
     });
     console.log('Created HOD:', hod.email);
@@ -72,7 +72,7 @@ const seedData = async () => {
     console.log('\n✓ Seed completed successfully!');
     console.log('\nDemo Credentials:');
     console.log('  Coordinator: coordinator@techteam.edu / coordinator123');
-    console.log('  HOD:         sahilirshad875@gmail.com / hod123456');
+    console.log('  HOD:         agcmscshod@gmail.com / Anveshak@5271');
 
     process.exit(0);
   } catch (error) {

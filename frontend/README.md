@@ -98,7 +98,7 @@ This starts:
 | Role | Email | Password |
 |---|---|---|
 | Coordinator | `coordinator@techteam.edu` | `coordinator123` |
-| HOD | `sahilirshad875@gmail.com` | `hod123456` |
+| HOD | `agcmscshod@gmail.com` | `Anveshak@5271` |
 
 ---
 
