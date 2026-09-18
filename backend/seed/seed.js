@@ -39,7 +39,7 @@ const seedData = async () => {
     console.log('Created coordinator:', coordinator.email);
 
     const hod = await User.create({
-      name: 'Prof. Rajesh Kumar',
+      name: 'Mr. Naveen Gowda',
       email: 'agcmscshod@gmail.com',
       passwordHash: 'Anveshak@5271',
       role: 'hod',

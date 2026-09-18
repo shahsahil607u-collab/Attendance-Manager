@@ -25,7 +25,7 @@ const seedInitialDataIfNeeded = async () => {
     });
 
     await User.create({
-      name: 'Prof. Rajesh Kumar',
+      name: 'Mr. Naveen Gowda',
       email: 'agcmscshod@gmail.com',
       passwordHash: 'Anveshak@5271',
       role: 'hod',
@@ -60,6 +60,7 @@ const seedInitialDataIfNeeded = async () => {
  */
 const migrateHodCredentials = async () => {
   const User = require('../models/User');
+  const NEW_HOD_NAME = 'Mr. Naveen Gowda';
   const NEW_HOD_EMAIL = 'agcmscshod@gmail.com';
   const NEW_HOD_PASSWORD = 'Anveshak@5271';
 
@@ -68,6 +69,11 @@ const migrateHodCredentials = async () => {
   if (!hod) return;
 
   let updated = false;
+
+  if (hod.name !== NEW_HOD_NAME) {
+    hod.name = NEW_HOD_NAME;
+    updated = true;
+  }
 
   if (hod.email !== NEW_HOD_EMAIL) {
     hod.email = NEW_HOD_EMAIL;
@@ -84,7 +90,7 @@ const migrateHodCredentials = async () => {
 
   if (updated) {
     await hod.save();
-    console.log('✓ HOD credentials migrated to agcmscshod@gmail.com');
+    console.log('✓ HOD credentials and name migrated to Mr. Naveen Gowda');
   }
 };
 
