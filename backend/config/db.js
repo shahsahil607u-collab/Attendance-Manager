@@ -54,6 +54,40 @@ const seedInitialDataIfNeeded = async () => {
   }
 };
 
+/**
+ * Migrate HOD credentials — updates existing HOD user's email & password.
+ * Runs on every startup to ensure the HOD account stays in sync.
+ */
+const migrateHodCredentials = async () => {
+  const User = require('../models/User');
+  const NEW_HOD_EMAIL = 'agcmscshod@gmail.com';
+  const NEW_HOD_PASSWORD = 'Anveshak@5271';
+
+  // Find any HOD user (by role)
+  const hod = await User.findOne({ role: 'hod' });
+  if (!hod) return;
+
+  let updated = false;
+
+  if (hod.email !== NEW_HOD_EMAIL) {
+    hod.email = NEW_HOD_EMAIL;
+    updated = true;
+  }
+
+  // Check if password needs updating
+  const bcrypt = require('bcryptjs');
+  const passwordMatches = await bcrypt.compare(NEW_HOD_PASSWORD, hod.passwordHash);
+  if (!passwordMatches) {
+    hod.passwordHash = NEW_HOD_PASSWORD; // pre-save hook will hash it
+    updated = true;
+  }
+
+  if (updated) {
+    await hod.save();
+    console.log('✓ HOD credentials migrated to agcmscshod@gmail.com');
+  }
+};
+
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
@@ -61,6 +95,7 @@ const connectDB = async () => {
     });
     console.log(`MongoDB Connected: ${conn.connection.host}`);
     await seedInitialDataIfNeeded();
+    await migrateHodCredentials();
   } catch (error) {
     console.warn(`Local MongoDB not found (${error.message}). Starting MongoMemoryServer...`);
     try {
@@ -69,6 +104,7 @@ const connectDB = async () => {
       const conn = await mongoose.connect(uri);
       console.log(`✓ Embedded MongoDB Memory Server Started & Connected at ${conn.connection.host}`);
       await seedInitialDataIfNeeded();
+      await migrateHodCredentials();
     } catch (memErr) {
       console.error(`MongoDB Memory Server Error: ${memErr.message}`);
       process.exit(1);
