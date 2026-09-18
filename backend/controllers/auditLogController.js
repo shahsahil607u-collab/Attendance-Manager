@@ -19,4 +19,29 @@ const getAuditLogs = async (req, res, next) => {
   } catch (error) { next(error); }
 };
 
-module.exports = { getAuditLogs };
+const deleteAuditLog = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const log = await AuditLog.findByIdAndDelete(id);
+    if (!log) {
+      return res.status(404).json({ success: false, message: 'Audit log not found' });
+    }
+    res.json({ success: true, message: 'Audit log deleted successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const clearAuditLogs = async (req, res, next) => {
+  try {
+    const { action } = req.query;
+    const query = {};
+    if (action) query.action = action;
+    const result = await AuditLog.deleteMany(query);
+    res.json({ success: true, message: `Deleted ${result.deletedCount} audit log(s) successfully` });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getAuditLogs, deleteAuditLog, clearAuditLogs };
