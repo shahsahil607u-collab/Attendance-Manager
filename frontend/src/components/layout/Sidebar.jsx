@@ -2,11 +2,11 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
   LayoutDashboard, Users, CalendarCheck, ClipboardList, BarChart3,
-  Bell, ScrollText, Settings, ChevronLeft, ChevronRight, LogOut, GraduationCap
+  Bell, ScrollText, Settings, ChevronLeft, ChevronRight, LogOut, GraduationCap, X
 } from 'lucide-react';
 import { useState } from 'react';
 
-const Sidebar = () => {
+const Sidebar = ({ mobileOpen, onCloseMobile }) => {
   const { user, logout, isCoordinator, isHod } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
@@ -31,44 +31,59 @@ const Sidebar = () => {
   const links = isHod ? hodLinks : coordinatorLinks;
 
   return (
-    <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`} style={{
+    <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`} style={{
       width: collapsed ? 'var(--sidebar-collapsed)' : 'var(--sidebar-width)',
       position: 'fixed', left: 0, top: 0, bottom: 0, background: 'var(--gray-900)',
-      display: 'flex', flexDirection: 'column', transition: 'width var(--transition-normal)',
+      display: 'flex', flexDirection: 'column', transition: 'all var(--transition-normal)',
       zIndex: 100, overflow: 'hidden',
     }}>
-      {/* Logo */}
-      <div style={{ padding: '20px 16px', borderBottom: '1px solid var(--gray-700)', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div style={{ width: 40, height: 40, borderRadius: 'var(--radius-md)', background: 'var(--primary-600)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-          <GraduationCap size={22} color="#fff" />
-        </div>
-        {!collapsed && (
-          <div style={{ overflow: 'hidden' }}>
-            <div style={{ color: '#fff', fontWeight: 700, fontSize: '0.9rem', whiteSpace: 'nowrap' }}>AttendanceMS</div>
-            <div style={{ color: 'var(--gray-400)', fontSize: '0.7rem', whiteSpace: 'nowrap' }}>Technical Team</div>
+      {/* Logo & Close on mobile */}
+      <div style={{ padding: '20px 16px', borderBottom: '1px solid var(--gray-700)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ width: 40, height: 40, borderRadius: 'var(--radius-md)', background: 'var(--primary-600)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <GraduationCap size={22} color="#fff" />
           </div>
-        )}
+          {!collapsed && (
+            <div style={{ overflow: 'hidden' }}>
+              <div style={{ color: '#fff', fontWeight: 700, fontSize: '0.9rem', whiteSpace: 'nowrap' }}>AttendanceMS</div>
+              <div style={{ color: 'var(--gray-400)', fontSize: '0.7rem', whiteSpace: 'nowrap' }}>Technical Team</div>
+            </div>
+          )}
+        </div>
+        {/* Mobile close button */}
+        <button
+          className="mobile-close-btn"
+          onClick={onCloseMobile}
+          aria-label="Close menu"
+        >
+          <X size={20} />
+        </button>
       </div>
 
       {/* Navigation */}
       <nav style={{ flex: 1, padding: '12px 8px', overflowY: 'auto' }}>
         {links.map(link => (
-          <NavLink key={link.to} to={link.to} style={({ isActive }) => ({
-            display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px',
-            borderRadius: 'var(--radius-sm)', color: isActive ? '#fff' : 'var(--gray-400)',
-            background: isActive ? 'var(--primary-700)' : 'transparent', marginBottom: 2,
-            fontSize: '0.875rem', fontWeight: isActive ? 500 : 400, textDecoration: 'none',
-            transition: 'all var(--transition-fast)', whiteSpace: 'nowrap',
-          })}>
+          <NavLink
+            key={link.to}
+            to={link.to}
+            onClick={() => onCloseMobile?.()}
+            style={({ isActive }) => ({
+              display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px',
+              borderRadius: 'var(--radius-sm)', color: isActive ? '#fff' : 'var(--gray-400)',
+              background: isActive ? 'var(--primary-700)' : 'transparent', marginBottom: 2,
+              fontSize: '0.875rem', fontWeight: isActive ? 500 : 400, textDecoration: 'none',
+              transition: 'all var(--transition-fast)', whiteSpace: 'nowrap',
+            })}
+          >
             <link.icon size={20} style={{ flexShrink: 0 }} />
-            {!collapsed && link.label}
+            {(!collapsed || mobileOpen) && link.label}
           </NavLink>
         ))}
       </nav>
 
       {/* User & Collapse */}
       <div style={{ borderTop: '1px solid var(--gray-700)', padding: '12px' }}>
-        {!collapsed && (
+        {(!collapsed || mobileOpen) && (
           <div style={{ padding: '8px 12px', marginBottom: 8 }}>
             <div style={{ color: '#fff', fontSize: '0.8125rem', fontWeight: 500 }}>{user?.name}</div>
             <div style={{ color: 'var(--gray-400)', fontSize: '0.7rem', textTransform: 'capitalize' }}>{user?.role}</div>
@@ -79,13 +94,17 @@ const Sidebar = () => {
           borderRadius: 'var(--radius-sm)', color: 'var(--gray-400)', background: 'transparent',
           border: 'none', fontSize: '0.875rem', cursor: 'pointer', whiteSpace: 'nowrap',
         }}>
-          <LogOut size={20} /> {!collapsed && 'Logout'}
+          <LogOut size={20} /> {(!collapsed || mobileOpen) && 'Logout'}
         </button>
-        <button onClick={() => setCollapsed(!collapsed)} style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px',
-          width: '100%', borderRadius: 'var(--radius-sm)', color: 'var(--gray-500)',
-          background: 'transparent', border: 'none', marginTop: 4, cursor: 'pointer',
-        }}>
+        <button
+          className="desktop-collapse-btn"
+          onClick={() => setCollapsed(!collapsed)}
+          style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px',
+            width: '100%', borderRadius: 'var(--radius-sm)', color: 'var(--gray-500)',
+            background: 'transparent', border: 'none', marginTop: 4, cursor: 'pointer',
+          }}
+        >
           {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
         </button>
       </div>

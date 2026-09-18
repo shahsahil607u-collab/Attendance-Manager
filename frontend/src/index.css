@@ -923,8 +923,104 @@ tbody tr.clickable {
   color: var(--gray-700);
 }
 
+/* Mobile Topbar & Drawer */
+.mobile-topbar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--gray-900);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid var(--gray-800);
+}
+
+.mobile-menu-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #fff;
+}
+
+.mobile-topbar-user {
+  display: flex;
+  align-items: center;
+}
+
+.mobile-role-tag {
+  background: var(--primary-700);
+  color: #fff;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.5px;
+}
+
+.mobile-close-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--gray-400);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+}
+
+.mobile-backdrop {
+  display: none;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
+  .mobile-topbar {
+    display: flex;
+  }
+
+  .mobile-close-btn {
+    display: flex;
+  }
+
+  .desktop-collapse-btn {
+    display: none !important;
+  }
+
+  .mobile-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    z-index: 99;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+    width: 260px !important;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0) !important;
+  }
+
   .main-content {
     margin-left: 0;
   }
@@ -947,6 +1043,10 @@ tbody tr.clickable {
 }
 
 @media (max-width: 640px) {
+  .login-card {
+    padding: 28px 20px;
+  }
+
   .stats-grid {
     grid-template-columns: 1fr 1fr;
     gap: 10px;

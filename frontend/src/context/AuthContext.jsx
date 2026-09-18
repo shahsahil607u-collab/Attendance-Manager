@@ -14,12 +14,14 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // On mount, check if the httpOnly cookie session is still valid
+    // Check if session is still valid (uses cookie or Bearer token via api interceptor)
     api.get('/auth/me')
       .then(res => {
         setUser(res.data.data);
       })
       .catch(() => {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
         setUser(null);
       })
       .finally(() => {
@@ -29,7 +31,13 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const res = await api.post('/auth/login', { email, password });
-    const { user: userData } = res.data.data;
+    const { user: userData, accessToken, refreshToken } = res.data.data;
+    if (accessToken) {
+      localStorage.setItem('accessToken', accessToken);
+    }
+    if (refreshToken) {
+      localStorage.setItem('refreshToken', refreshToken);
+    }
     setUser(userData);
     return userData;
   };
@@ -40,6 +48,8 @@ export const AuthProvider = ({ children }) => {
     } catch {
       // Logout should always succeed client-side even if server call fails
     }
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
     setUser(null);
   }, []);
 

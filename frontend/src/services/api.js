@@ -6,6 +6,18 @@ const api = axios.create({
   withCredentials: true, // send httpOnly cookies with every request
 });
 
+// Request interceptor — attach Bearer token from localStorage for mobile browsers where cross-site cookies are blocked
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 // Flag to prevent multiple concurrent refresh attempts
 let isRefreshing = false;
 let refreshQueue = [];
@@ -42,11 +54,22 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await api.post('/auth/refresh');
+        const storedRefreshToken = localStorage.getItem('refreshToken');
+        const res = await api.post(
+          '/auth/refresh',
+          { refreshToken: storedRefreshToken },
+          { headers: storedRefreshToken ? { 'x-refresh-token': storedRefreshToken } : {} }
+        );
+        const newAccessToken = res.data?.data?.accessToken;
+        if (newAccessToken) {
+          localStorage.setItem('accessToken', newAccessToken);
+        }
         processQueue(null);
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError);
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
         // Refresh failed — redirect to login
         if (window.location.pathname !== '/login') {
           window.location.href = '/login';

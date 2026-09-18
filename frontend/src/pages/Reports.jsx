@@ -29,8 +29,10 @@ const Reports = () => {
   };
 
   const handleExport = () => {
+    const token = localStorage.getItem('accessToken') || '';
     const params = tab === 'monthly' ? `type=monthly&month=${month}&year=${year}` : `type=daily&date=${date}`;
-    window.open(`${import.meta.env.VITE_API_URL}/reports/export?${params}`, '_blank');
+    const tokenParam = token ? `&token=${encodeURIComponent(token)}` : '';
+    window.open(`${import.meta.env.VITE_API_URL}/reports/export?${params}${tokenParam}`, '_blank');
   };
 
   const tabs = [{ key: 'monthly', label: 'Monthly' }, { key: 'daily', label: 'Daily' }];

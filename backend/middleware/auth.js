@@ -11,12 +11,17 @@ const auth = async (req, res, next) => {
     // 1. Try httpOnly cookie first
     let token = req.cookies?.accessToken;
 
-    // 2. Fallback to Authorization header (for API clients / testing)
+    // 2. Fallback to Authorization header (for mobile / API clients / testing)
     if (!token) {
       const authHeader = req.headers.authorization;
       if (authHeader && authHeader.startsWith('Bearer ')) {
         token = authHeader.split(' ')[1];
       }
+    }
+
+    // 3. Fallback to query param (e.g. window.open download links)
+    if (!token && req.query?.token) {
+      token = req.query.token;
     }
 
     if (!token) {

@@ -89,7 +89,7 @@ const login = async (req, res, next) => {
     user.refreshToken = crypto.createHash('sha256').update(refreshToken).digest('hex');
     await user.save();
 
-    // Set httpOnly cookies
+    // Set httpOnly cookies (for desktop browsers supporting SameSite=None)
     res.cookie('accessToken', accessToken, getAccessCookieOptions());
     res.cookie('refreshToken', refreshToken, getRefreshCookieOptions());
 
@@ -109,6 +109,8 @@ const login = async (req, res, next) => {
           email: user.email,
           role: user.role,
         },
+        accessToken,
+        refreshToken,
       },
     });
   } catch (error) {
@@ -122,7 +124,7 @@ const login = async (req, res, next) => {
  */
 const refresh = async (req, res, next) => {
   try {
-    const token = req.cookies.refreshToken;
+    const token = req.cookies?.refreshToken || req.body?.refreshToken || req.headers['x-refresh-token'];
 
     if (!token) {
       return res.status(401).json({
@@ -177,6 +179,7 @@ const refresh = async (req, res, next) => {
           email: user.email,
           role: user.role,
         },
+        accessToken: newAccessToken,
       },
     });
   } catch (error) {

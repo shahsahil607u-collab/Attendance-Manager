@@ -55,7 +55,7 @@ app.use(helmet({
   },
 }));
 
-// CORS — scoped to frontend origin, allowing local dev ports
+// CORS — scoped to frontend origin, allowing local dev ports and mobile Bearer tokens
 app.use(cors({
   origin: (origin, callback) => {
     if (isAllowedOrigin(origin)) {
@@ -65,6 +65,8 @@ app.use(cors({
     }
   },
   credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-refresh-token', 'X-Requested-With', 'Accept'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 }));
 
 // Cookie parser
