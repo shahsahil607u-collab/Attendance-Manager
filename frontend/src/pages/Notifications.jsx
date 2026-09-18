@@ -46,11 +46,7 @@ const Notifications = () => {
   return (
     <div>
       <div className="page-header"><h1>Notifications</h1><p>Email notification history and status</p></div>
-      <div className="alert alert-info" style={{ marginBottom: 16 }}>
-        <strong>📧 Email Service Status:</strong> Notifications are generated automatically when attendance is submitted. 
-        Click <strong>View Email</strong> on any sent notification to view the exact HTML email preview. 
-        To deliver emails directly to a real Gmail inbox, enter your <code>SMTP_USER</code> &amp; Gmail 16-digit App Password in <code>backend/.env</code>.
-      </div>
+
       <div className="toolbar">
         <select className="form-select" style={{ width: 'auto' }} value={filter} onChange={e => { setFilter(e.target.value); setPage(1); }}>
           <option value="">All Status</option>
