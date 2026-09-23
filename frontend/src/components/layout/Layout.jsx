@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Sidebar from './Sidebar';
-import { Menu, GraduationCap } from 'lucide-react';
+import { Menu, GraduationCap, Code2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const Layout = ({ children }) => {
@@ -45,8 +45,39 @@ const Layout = ({ children }) => {
         <div className="page-wrapper">
           {children}
         </div>
-        <footer className="app-footer">
-          Developed by <span className="developer-name">Sahil Irshad</span>
+        <footer className="app-footer" role="contentinfo">
+          <div className="footer-inner">
+            <div className="footer-brand-section">
+              <div className="footer-brand-title">
+                <span className="footer-brand-name">AttendanceMS</span>
+                <span className="footer-separator" aria-hidden="true">•</span>
+                <span className="footer-brand-desc">Institutional Attendance System</span>
+              </div>
+              <p className="footer-meta-note">
+                Academic tracking, session analytics, and administrative reporting
+              </p>
+            </div>
+
+            <div
+              className="developer-badge"
+              tabIndex={0}
+              role="group"
+              aria-label="Developer attribution: Sahil Irshad, AttendanceMS Technical Team"
+            >
+              <div className="developer-avatar" aria-hidden="true">
+                <span className="developer-avatar-initials">SI</span>
+                <span className="developer-status-pulse" />
+              </div>
+              <div className="developer-info">
+                <div className="developer-role-tag">
+                  <Code2 size={12} className="developer-role-icon" aria-hidden="true" />
+                  <span>Developed by</span>
+                </div>
+                <div className="developer-name">Sahil Irshad</div>
+                <div className="developer-affiliation">AttendanceMS · Technical Team</div>
+              </div>
+            </div>
+          </div>
         </footer>
       </div>
     </div>

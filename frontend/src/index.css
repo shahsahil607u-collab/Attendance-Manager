@@ -908,19 +908,171 @@ tbody tr.clickable {
 
 /* Footer */
 .app-footer {
+  margin-top: auto;
   padding: 16px 32px;
   border-top: 1px solid var(--gray-200);
-  background: #fff;
-  text-align: center;
+  background: #ffffff;
+  position: relative;
+  z-index: 10;
+}
+
+.footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.footer-brand-section {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.footer-brand-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.footer-brand-name {
+  font-weight: 700;
+  font-size: 0.8125rem;
+  color: var(--gray-800);
+  letter-spacing: -0.01em;
+}
+
+.footer-separator {
+  color: var(--gray-300);
+  font-size: 0.75rem;
+  user-select: none;
+}
+
+.footer-brand-desc {
   font-size: 0.8125rem;
   color: var(--gray-500);
-  margin-top: auto;
-  letter-spacing: 0.01em;
+  font-weight: 400;
+}
+
+.footer-meta-note {
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  line-height: 1.4;
+}
+
+/* Developer Attribution Badge */
+.developer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 14px 7px 9px;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+  cursor: default;
+  outline: none;
+}
+
+.developer-badge:hover {
+  background: #ffffff;
+  border-color: var(--primary-300);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+  transform: translateY(-1px);
+}
+
+.developer-badge:focus-visible {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+  border-color: var(--primary-400);
+  background: #ffffff;
+}
+
+.developer-avatar {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, var(--gray-900) 0%, #1e3a5f 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.15);
+  transition: transform var(--transition-fast);
+}
+
+.developer-badge:hover .developer-avatar {
+  transform: scale(1.02);
+}
+
+.developer-avatar-initials {
+  color: #ffffff;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.developer-status-pulse {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary-500);
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+}
+
+.developer-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.developer-role-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--primary-600);
+  line-height: 1.2;
+}
+
+.developer-role-icon {
+  color: var(--primary-500);
+  flex-shrink: 0;
 }
 
 .app-footer .developer-name {
-  font-weight: 600;
-  color: var(--gray-700);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  transition: color var(--transition-fast);
+}
+
+.developer-badge:hover .developer-name {
+  color: var(--primary-700);
+}
+
+.developer-affiliation {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--gray-500);
+  line-height: 1.2;
 }
 
 /* Mobile Topbar & Drawer */
@@ -1030,7 +1182,11 @@ tbody tr.clickable {
   }
 
   .app-footer {
-    padding: 12px 20px;
+    padding: 14px 20px;
+  }
+
+  .footer-inner {
+    gap: 16px;
   }
 
   .form-row {
@@ -1039,6 +1195,31 @@ tbody tr.clickable {
 
   .stats-grid {
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+  }
+
+  .footer-brand-section {
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-brand-title {
+    justify-content: center;
+  }
+
+  .developer-badge {
+    width: 100%;
+    max-width: 320px;
+    justify-content: flex-start;
+    text-align: left;
   }
 }
 
@@ -1076,5 +1257,14 @@ tbody tr.clickable {
   .page-header-row {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .developer-badge,
+  .developer-avatar,
+  .app-footer .developer-name {
+    transition: none !important;
+    transform: none !important;
   }
 }
