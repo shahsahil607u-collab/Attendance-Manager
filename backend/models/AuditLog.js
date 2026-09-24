@@ -10,6 +10,8 @@ const auditLogSchema = new mongoose.Schema({
       'STUDENT_UPDATED',
       'STUDENT_DEACTIVATED',
       'SESSION_CREATED',
+      'SESSION_UPDATED',
+      'SESSION_DELETED',
       'ATTENDANCE_SUBMITTED',
       'ATTENDANCE_CORRECTED',
       'REPORT_GENERATED',

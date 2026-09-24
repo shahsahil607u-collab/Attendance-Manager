@@ -169,21 +169,51 @@ const updateSession = async (req, res, next) => {
       });
     }
 
-    if (session.status !== 'draft') {
+    if (session.status === 'locked') {
       return res.status(400).json({
         success: false,
-        message: 'Only draft sessions can be modified.',
+        message: 'Locked sessions cannot be modified.',
       });
     }
 
     const allowedFields = ['date', 'startTime', 'endTime', 'sessionName', 'topic', 'description'];
+
+    // Track changes for audit log
+    const changes = {};
     allowedFields.forEach(field => {
       if (req.body[field] !== undefined) {
-        session[field] = req.body[field];
+        const oldValue = field === 'date'
+          ? session[field]?.toISOString()
+          : session[field];
+        const newValue = req.body[field];
+        if (String(oldValue) !== String(newValue)) {
+          changes[field] = { from: oldValue, to: newValue };
+        }
+        session[field] = newValue;
       }
     });
 
+    // Validate start/end time relationship
+    if (session.startTime && session.endTime && session.startTime >= session.endTime) {
+      return res.status(400).json({
+        success: false,
+        message: 'Start time must be before end time.',
+      });
+    }
+
     await session.save();
+
+    // Audit log with changed fields
+    if (Object.keys(changes).length > 0) {
+      await createAuditLog({
+        action: 'SESSION_UPDATED',
+        performedBy: req.user._id,
+        targetType: 'Session',
+        targetId: session._id,
+        description: `Updated session "${session.sessionName}": changed ${Object.keys(changes).join(', ')}`,
+        metadata: { changes },
+      });
+    }
 
     res.json({
       success: true,

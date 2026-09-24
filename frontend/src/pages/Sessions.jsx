@@ -5,8 +5,9 @@ import api from '../services/api';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
 import Pagination from '../components/common/Pagination';
+import EditSessionModal from '../components/attendance/EditSessionModal';
 import { formatDate } from '../utils/helpers';
-import { Plus, Eye, Send, CalendarCheck, Trash2 } from 'lucide-react';
+import { Plus, Eye, Send, CalendarCheck, Trash2, Pencil } from 'lucide-react';
 
 const Sessions = () => {
   const { isCoordinator } = useAuth();
@@ -19,6 +20,7 @@ const Sessions = () => {
   const [form, setForm] = useState({ date: new Date().toISOString().split('T')[0], startTime: '14:00', endTime: '15:00', sessionName: 'Technical Team', topic: '', description: '' });
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState('');
+  const [editingSession, setEditingSession] = useState(null);
 
   useEffect(() => { fetchSessions(); }, [page]);
 
@@ -107,6 +109,11 @@ const Sessions = () => {
                     <td>
                       <div style={{ display: 'flex', gap: 4 }}>
                         <button className="btn btn-ghost btn-sm btn-icon" title="View" onClick={() => navigate(`/sessions/${s._id}`)}><Eye size={16} /></button>
+                        {isCoordinator && s.status !== 'locked' && (
+                          <button className="btn btn-ghost btn-sm btn-icon" title="Edit session" onClick={() => setEditingSession(s)}>
+                            <Pencil size={16} />
+                          </button>
+                        )}
                         {isCoordinator && s.status === 'draft' && <button className="btn btn-ghost btn-sm btn-icon" title="Mark Attendance" onClick={() => navigate(`/sessions/${s._id}/mark`)}><Send size={16} /></button>}
                         {isCoordinator && (
                           <button
@@ -128,8 +135,16 @@ const Sessions = () => {
           <div className="card-footer"><Pagination page={pagination.page} pages={pagination.pages} total={pagination.total} onPageChange={setPage} /></div>
         </div>
       )}
+
+      <EditSessionModal
+        isOpen={!!editingSession}
+        onClose={() => setEditingSession(null)}
+        session={editingSession}
+        onSuccess={fetchSessions}
+      />
     </div>
   );
 };
 
 export default Sessions;
+
